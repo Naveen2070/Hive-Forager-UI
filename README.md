@@ -16,19 +16,20 @@ This frontend is designed to consume the **EventHive API**.
 
 * **🎨 Modern UI/UX:** Built with **Shadcn UI** and **Tailwind CSS** for a sleek, accessible, and responsive dark-mode interface.
 * **🔐 Secure Authentication:** Complete flow including Login, Registration, and **Forgot/Reset Password** handling with JWT storage.
-* **👤 User Dashboard:**
+  
+**👤 User Dashboard:**
 * **Digital Wallet:** View active tickets and booking history.
 * **QR Generation:** Auto-generates unique QR codes for entry.
 * **Profile Settings:** Manage display name, security settings, and password updates.
 
 
-* **🕵️ Organizer Tools:**
+**🕵️ Organizer Tools:**
 * **Analytics Dashboard:** Visual revenue charts and "Recent Sales" feeds.
 * **Event Management:** Create and edit events with multi-tier ticketing options.
 * **Ticket Scanner:** Mobile-first camera interface for validating attendee tickets in real-time.
 
 
-* **⚡ Performance First:**
+**⚡ Performance First:**
 * **Type-Safe Routing:** Uses **TanStack Router** for 100% type-safe navigation and automatic code splitting.
 * **Server State Management:** Uses **TanStack Query** for caching, optimistic updates, and background refetching.
 
