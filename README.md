@@ -6,6 +6,12 @@ The EventHive Frontend is a production-ready single-page application (SPA) desig
 
 ---
 
+### 🔗 Backend Repository
+This frontend is designed to consume the **EventHive API**.
+👉 **[View the Backend Repository here](https://github.com/Naveen2070/EventHive)**
+
+---
+
 ## 🚀 Key Features
 
 * **🎨 Modern UI/UX:** Built with **Shadcn UI** and **Tailwind CSS** for a sleek, accessible, and responsive dark-mode interface.
