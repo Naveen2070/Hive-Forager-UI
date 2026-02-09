@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { eventsApi } from '@/api/events'
-import { eventKeys } from '@/features/events/events.keys'
 import type {
   CreateTicketTierRequest,
   UpdateTicketTierRequest,
 } from '@/types/event.type'
+import { eventsApi } from '@/api/events'
+import { eventKeys } from '@/features/events/events.keys'
 
 export const useTicketTierMutations = (eventId: number) => {
   const queryClient = useQueryClient()

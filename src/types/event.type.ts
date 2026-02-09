@@ -12,6 +12,14 @@ export interface TicketTierDTO {
   availableAllocation: number
   validFrom: string
   validUntil: string
+  createdBy: number
+  updatedBy: number
+  deletedBy: number
+  createdAt: string
+  updatedAt: string
+  deletedAt: string
+  isDeleted: boolean
+  isActive: boolean
 }
 
 export interface CreateTicketTierRequest {
@@ -20,6 +28,7 @@ export interface CreateTicketTierRequest {
   totalAllocation: number
   validFrom: string
   validUntil: string
+  createdBy: number
 }
 
 export interface UpdateTicketTierRequest {
@@ -28,6 +37,7 @@ export interface UpdateTicketTierRequest {
   totalAllocation?: number
   validFrom?: string
   validUntil?: string
+  updatedBy?: number
 }
 
 /* =========================

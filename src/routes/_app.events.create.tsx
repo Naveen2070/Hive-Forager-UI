@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import { ArrowLeft } from 'lucide-react'
 
 import type { CreateEventValues } from '@/features/events/event.schemas'
@@ -44,6 +44,7 @@ function CreateEventPage() {
         totalAllocation: tier.totalAllocation,
         validFrom,
         validUntil,
+        createdBy: Number(data.createdBy),
       }
     })
 

@@ -1,6 +1,14 @@
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
 
+import { TicketTierForm  } from './TicketTierForm'
+import { TicketTierCard } from './TicketTierCard'
+import type {
+  EventDTO,
+  TicketTierDTO,
+  UpdateTicketTierRequest,
+} from '@/types/event.type'
+import type {TierFormValues} from './TicketTierForm';
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -9,10 +17,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 
-import type { EventDTO, TicketTierDTO } from '@/types/event.type'
-import { TicketTierForm, type TierFormValues } from './TicketTierForm'
-import { TicketTierCard } from './TicketTierCard'
 import { useTicketTierMutations } from '@/features/events/hooks/useTicketTiers.ts'
+import { useAuthStore } from '@/store/auth.store.ts'
 
 interface TicketTierManagerProps {
   event: EventDTO
@@ -39,7 +45,8 @@ export const TicketTierManager = ({ event }: TicketTierManagerProps) => {
       // Ensure defaults if user didn't touch the date fields
       validFrom: data.validFrom || event.startDate,
       validUntil: data.validUntil || event.endDate,
-    }
+      updatedBy: Number(useAuthStore.getState().user?.id),
+    } satisfies UpdateTicketTierRequest
 
     if (editingTier) {
       updateTier.mutate(
