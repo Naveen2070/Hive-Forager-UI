@@ -1,8 +1,11 @@
 export interface JwtPayload {
   sub: string
-  roles: Array<string>
   exp: number
   iat: number
+  roles: Array<string>
+  id: number
+  username: string
+  email: string
 }
 
 export const parseJwt = (token: string): JwtPayload | null => {

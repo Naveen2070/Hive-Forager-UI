@@ -1,0 +1,48 @@
+name: EventHive CI (React)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Check out the code
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      # 2. Set up Node.js (Use the version matching your local dev)
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      # 3. Install Dependencies
+      # 'npm ci' is faster and more reliable than 'npm install' for CI environments
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Type Check (Optional but recommended)
+      # This ensures you don't have TypeScript errors that would break production
+      - name: Type Check
+        run: npx tsc --noEmit
+
+      # 5. Build the Project
+      # This runs 'vite build' and creates the 'dist/' folder
+      - name: Build project
+        run: npm run build
+
+      # 6. Upload Build Artifact (Optional)
+      # This saves your 'dist/' folder so you can download it from GitHub
+      # or use it in a deployment job later.
+#      - name: Upload production build
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: eventhive-frontend-build
+#          path: dist/
+#          retention-days: 1

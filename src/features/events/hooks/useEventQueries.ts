@@ -36,6 +36,7 @@ export const useEventQueries = () => {
     queryKey: eventKeys.public(debouncedFilters, page),
     queryFn: () => eventsApi.getAll(page, pageSize, debouncedFilters),
     placeholderData: keepPreviousData,
+    staleTime: 1000 * 60,
   })
 
   // My Events Query
@@ -44,6 +45,7 @@ export const useEventQueries = () => {
     queryFn: () => eventsApi.getMyEvents(page, pageSize),
     enabled: isOrganizer,
     placeholderData: keepPreviousData,
+    staleTime: 1000 * 60 * 5,
   })
 
   return {

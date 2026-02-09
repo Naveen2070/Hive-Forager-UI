@@ -74,8 +74,8 @@ export const LoginForm = () => {
                 <div className="flex items-center justify-between">
                   <FormLabel className="text-slate-200">Password</FormLabel>
                   <Link
-                    to="/"
-                    className="text-xs text-blue-400 hover:text-blue-300"
+                    to="/forgot-password"
+                    className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
                   >
                     Forgot password?
                   </Link>

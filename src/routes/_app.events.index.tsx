@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 // Feature Components
@@ -64,6 +65,7 @@ function EventsPage() {
     page,
     setPage,
   } = useEventQueries()
+  const [section, setSection] = useState<'mine' | 'browse'>(isOrganizer ? 'mine' : 'browse')
 
   return (
     <div className="space-y-8">
@@ -76,10 +78,24 @@ function EventsPage() {
       />
 
       {isOrganizer ? (
-        <Tabs defaultValue="mine" className="w-full">
+        <Tabs
+          value={section}
+          onValueChange={(v) => setSection(v as 'mine' | 'browse')}
+          className="w-full"
+        >
           <TabsList className="bg-slate-900 border border-slate-800">
-            <TabsTrigger value="mine">My Events</TabsTrigger>
-            <TabsTrigger value="browse">Browse All</TabsTrigger>
+            <TabsTrigger
+              value="mine"
+              className="data-[state=active]:bg-slate-800 data-[state=active]:text-white"
+            >
+              My Events
+            </TabsTrigger>
+            <TabsTrigger
+              value="browse"
+              className="data-[state=active]:bg-slate-800 data-[state=active]:text-white"
+            >
+              Browse All
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="mine" className="mt-6">

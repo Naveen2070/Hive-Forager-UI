@@ -1,12 +1,14 @@
-import { createFileRoute, Link, useParams } from '@tanstack/react-router'
+import { Link, createFileRoute, useParams } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 
+import type { CreateEventValues } from '@/features/events/event.schemas'
 import { eventsApi } from '@/api/events'
 import { eventKeys } from '@/features/events/events.keys'
 import { CreateEventForm } from '@/features/events/components/CreateEventForm'
 import { useUpdateEvent } from '@/features/events/hooks/useUpdateEvent'
-import type { CreateEventValues } from '@/features/events/event.schemas'
+import { EventStatusCard } from '@/features/events/components/EventStatusCard'
+import { TicketTierManager } from '@/features/events/components/ticket-tier/TicketTierManager.tsx'
 
 export const Route = createFileRoute('/_app/events/$eventId/edit')({
   component: EditEventPage,
@@ -45,17 +47,17 @@ function EditEventPage() {
     title: event.title,
     description: event.description,
     location: event.location,
-    price: event.price,
-    totalSeats: event.totalSeats,
     startDate: event.startDate.slice(0, 16),
     endDate: event.endDate.slice(0, 16),
     organizerEmail: event.organizerName,
     createdBy: String(event.organizerId),
+    // We pass tiers so the form validation passes,
+    // but remember useUpdateEvent ignores changes to this field.
+    ticketTiers: event.ticketTiers,
   }
 
-  // 4. Handle Submit
+  // Handle Submit (Basic Info Only)
   const handleSubmit = (data: CreateEventValues) => {
-    // Add seconds back for the API
     const payload = {
       ...data,
       startDate:
@@ -66,8 +68,9 @@ function EditEventPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto py-8">
-      <div className="mb-8 space-y-2">
+    <div className="max-w-4xl mx-auto py-8 px-4 space-y-8">
+      {/* Header */}
+      <div className="space-y-2">
         <Link
           to="/events"
           className="text-sm text-slate-400 hover:text-blue-400 flex items-center gap-1 mb-4 transition-colors"
@@ -80,13 +83,36 @@ function EditEventPage() {
         <p className="text-slate-400">Update the details of your event.</p>
       </div>
 
-      <CreateEventForm
-        onSubmit={handleSubmit}
-        isPending={isSaving}
-        organizerEmail={event.organizerName}
-        createdBy={String(event.organizerId)}
-        initialData={initialData}
-      />
+      <EventStatusCard eventId={event.id} currentStatus={event.status} />
+
+      {/* Section 1: Basic Event Details */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 pb-2 border-b border-slate-800">
+          <h2 className="text-xl font-bold text-slate-100">Event Details</h2>
+        </div>
+
+        <CreateEventForm
+          onSubmit={handleSubmit}
+          isPending={isSaving}
+          organizerEmail={event.organizerName}
+          createdBy={String(event.organizerId)}
+          initialData={initialData}
+        />
+      </div>
+
+      {/* Section 2: Ticket Management */}
+      {/* We separate this visually so the user knows it's distinct from the form above */}
+      <div className="pt-8 space-y-6">
+        <div className="flex items-center gap-2 pb-2 border-b border-slate-800">
+          <h2 className="text-xl font-bold text-slate-100">
+            Ticket Management
+          </h2>
+        </div>
+
+        <div className="bg-slate-950/50 border border-slate-800 rounded-xl p-6">
+          <TicketTierManager event={event} />
+        </div>
+      </div>
     </div>
   )
 }

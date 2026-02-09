@@ -9,15 +9,32 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AppRouteImport } from './routes/_app'
-import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRegisterRouteImport } from './routes/_auth.register'
 import { Route as AuthLoginRouteImport } from './routes/_auth.login'
+import { Route as AppSettingsRouteImport } from './routes/_app.settings'
 import { Route as AppEventsIndexRouteImport } from './routes/_app.events.index'
+import { Route as AppDashboardIndexRouteImport } from './routes/_app.dashboard.index'
+import { Route as AppBookingsIndexRouteImport } from './routes/_app.bookings.index'
+import { Route as AppOrganizerScanRouteImport } from './routes/_app.organizer.scan'
 import { Route as AppEventsCreateRouteImport } from './routes/_app.events.create'
+import { Route as AppEventsEventIdIndexRouteImport } from './routes/_app.events.$eventId.index'
 import { Route as AppEventsEventIdEditRouteImport } from './routes/_app.events.$eventId.edit'
 
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
   getParentRoute: () => rootRouteImport,
@@ -26,10 +43,10 @@ const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppIndexRoute = AppIndexRouteImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AppRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRegisterRoute = AuthRegisterRouteImport.update({
   id: '/register',
@@ -41,14 +58,39 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AuthRoute,
 } as any)
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppEventsIndexRoute = AppEventsIndexRouteImport.update({
   id: '/events/',
   path: '/events/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppDashboardIndexRoute = AppDashboardIndexRouteImport.update({
+  id: '/dashboard/',
+  path: '/dashboard/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppBookingsIndexRoute = AppBookingsIndexRouteImport.update({
+  id: '/bookings/',
+  path: '/bookings/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppOrganizerScanRoute = AppOrganizerScanRouteImport.update({
+  id: '/organizer/scan',
+  path: '/organizer/scan',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppEventsCreateRoute = AppEventsCreateRouteImport.update({
   id: '/events/create',
   path: '/events/create',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppEventsEventIdIndexRoute = AppEventsEventIdIndexRouteImport.update({
+  id: '/events/$eventId/',
+  path: '/events/$eventId/',
   getParentRoute: () => AppRoute,
 } as any)
 const AppEventsEventIdEditRoute = AppEventsEventIdEditRouteImport.update({
@@ -58,68 +100,127 @@ const AppEventsEventIdEditRoute = AppEventsEventIdEditRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AppIndexRoute
+  '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/settings': typeof AppSettingsRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/events/create': typeof AppEventsCreateRoute
+  '/organizer/scan': typeof AppOrganizerScanRoute
+  '/bookings/': typeof AppBookingsIndexRoute
+  '/dashboard/': typeof AppDashboardIndexRoute
   '/events/': typeof AppEventsIndexRoute
   '/events/$eventId/edit': typeof AppEventsEventIdEditRoute
+  '/events/$eventId/': typeof AppEventsEventIdIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof AppIndexRoute
+  '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/settings': typeof AppSettingsRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/events/create': typeof AppEventsCreateRoute
+  '/organizer/scan': typeof AppOrganizerScanRoute
+  '/bookings': typeof AppBookingsIndexRoute
+  '/dashboard': typeof AppDashboardIndexRoute
   '/events': typeof AppEventsIndexRoute
   '/events/$eventId/edit': typeof AppEventsEventIdEditRoute
+  '/events/$eventId': typeof AppEventsEventIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/_app': typeof AppRouteWithChildren
   '/_auth': typeof AuthRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/_app/settings': typeof AppSettingsRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
-  '/_app/': typeof AppIndexRoute
   '/_app/events/create': typeof AppEventsCreateRoute
+  '/_app/organizer/scan': typeof AppOrganizerScanRoute
+  '/_app/bookings/': typeof AppBookingsIndexRoute
+  '/_app/dashboard/': typeof AppDashboardIndexRoute
   '/_app/events/': typeof AppEventsIndexRoute
   '/_app/events/$eventId/edit': typeof AppEventsEventIdEditRoute
+  '/_app/events/$eventId/': typeof AppEventsEventIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/forgot-password'
+    | '/reset-password'
+    | '/settings'
     | '/login'
     | '/register'
     | '/events/create'
+    | '/organizer/scan'
+    | '/bookings/'
+    | '/dashboard/'
     | '/events/'
     | '/events/$eventId/edit'
+    | '/events/$eventId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/forgot-password'
+    | '/reset-password'
+    | '/settings'
     | '/login'
     | '/register'
     | '/events/create'
+    | '/organizer/scan'
+    | '/bookings'
+    | '/dashboard'
     | '/events'
     | '/events/$eventId/edit'
+    | '/events/$eventId'
   id:
     | '__root__'
+    | '/'
     | '/_app'
     | '/_auth'
+    | '/forgot-password'
+    | '/reset-password'
+    | '/_app/settings'
     | '/_auth/login'
     | '/_auth/register'
-    | '/_app/'
     | '/_app/events/create'
+    | '/_app/organizer/scan'
+    | '/_app/bookings/'
+    | '/_app/dashboard/'
     | '/_app/events/'
     | '/_app/events/$eventId/edit'
+    | '/_app/events/$eventId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_auth': {
       id: '/_auth'
       path: ''
@@ -134,12 +235,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app/': {
-      id: '/_app/'
+    '/': {
+      id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof AppIndexRouteImport
-      parentRoute: typeof AppRoute
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_auth/register': {
       id: '/_auth/register'
@@ -155,6 +256,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_app/settings': {
+      id: '/_app/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/events/': {
       id: '/_app/events/'
       path: '/events'
@@ -162,11 +270,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppEventsIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/dashboard/': {
+      id: '/_app/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof AppDashboardIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/bookings/': {
+      id: '/_app/bookings/'
+      path: '/bookings'
+      fullPath: '/bookings/'
+      preLoaderRoute: typeof AppBookingsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/organizer/scan': {
+      id: '/_app/organizer/scan'
+      path: '/organizer/scan'
+      fullPath: '/organizer/scan'
+      preLoaderRoute: typeof AppOrganizerScanRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/events/create': {
       id: '/_app/events/create'
       path: '/events/create'
       fullPath: '/events/create'
       preLoaderRoute: typeof AppEventsCreateRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/events/$eventId/': {
+      id: '/_app/events/$eventId/'
+      path: '/events/$eventId'
+      fullPath: '/events/$eventId/'
+      preLoaderRoute: typeof AppEventsEventIdIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/events/$eventId/edit': {
@@ -180,17 +316,25 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
-  AppIndexRoute: typeof AppIndexRoute
+  AppSettingsRoute: typeof AppSettingsRoute
   AppEventsCreateRoute: typeof AppEventsCreateRoute
+  AppOrganizerScanRoute: typeof AppOrganizerScanRoute
+  AppBookingsIndexRoute: typeof AppBookingsIndexRoute
+  AppDashboardIndexRoute: typeof AppDashboardIndexRoute
   AppEventsIndexRoute: typeof AppEventsIndexRoute
   AppEventsEventIdEditRoute: typeof AppEventsEventIdEditRoute
+  AppEventsEventIdIndexRoute: typeof AppEventsEventIdIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
-  AppIndexRoute: AppIndexRoute,
+  AppSettingsRoute: AppSettingsRoute,
   AppEventsCreateRoute: AppEventsCreateRoute,
+  AppOrganizerScanRoute: AppOrganizerScanRoute,
+  AppBookingsIndexRoute: AppBookingsIndexRoute,
+  AppDashboardIndexRoute: AppDashboardIndexRoute,
   AppEventsIndexRoute: AppEventsIndexRoute,
   AppEventsEventIdEditRoute: AppEventsEventIdEditRoute,
+  AppEventsEventIdIndexRoute: AppEventsEventIdIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
@@ -208,8 +352,11 @@ const AuthRouteChildren: AuthRouteChildren = {
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

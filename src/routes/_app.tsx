@@ -1,15 +1,18 @@
-import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
+import {
+  Outlet,
+  createFileRoute,
+  redirect,
+  useLocation,
+} from '@tanstack/react-router'
+import {  motion } from 'framer-motion'
 import { Sidebar } from '@/components/layouts/Sidebar'
 import { useAuthStore } from '@/store/auth.store'
-import { toast } from 'sonner'
 
 export const Route = createFileRoute('/_app')({
   component: AppLayout,
   beforeLoad: ({ location }) => {
-    const path = location.pathname
     const { isAuthenticated } = useAuthStore.getState()
-    if (!isAuthenticated && path !== '/login' && path !== '/register') {
-      toast.error('You are not authenticated')
+    if (!isAuthenticated) {
       throw redirect({
         to: '/login',
         search: {
@@ -21,16 +24,23 @@ export const Route = createFileRoute('/_app')({
 })
 
 function AppLayout() {
+  const location = useLocation()
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      {/* Sidebar is fixed on the left */}
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       <Sidebar />
 
-      {/* Main Content Area (pushes over 64 units to make room for sidebar) */}
-      <main className="lg:pl-64 min-h-screen transition-all duration-300 ease-in-out">
-        {/* We can add a top header here later for mobile hamburger menu */}
+      <main className="lg:pl-64 pt-16 lg:pt-0 min-h-screen transition-all duration-300 ease-in-out">
         <div className="container py-8 px-6 lg:px-10 max-w-7xl mx-auto">
-          <Outlet />
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+          >
+            <Outlet />
+          </motion.div>
         </div>
       </main>
     </div>

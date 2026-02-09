@@ -1,5 +1,6 @@
-import { CalendarDays, Edit, MapPin, Trash2, User } from 'lucide-react'
+import { CalendarDays, Edit, Loader2, MapPin, Trash2, User } from 'lucide-react'
 import { format } from 'date-fns'
+import { Link } from '@tanstack/react-router'
 import type { EventDTO } from '@/types/event.type.ts'
 import { useAuthStore } from '@/store/auth.store.ts'
 import { EventStatus, UserRole } from '@/types/enum.ts'
@@ -11,13 +12,18 @@ import {
 } from '@/components/ui/card.tsx'
 import { Badge } from '@/components/ui/badge.tsx'
 import { Button } from '@/components/ui/button.tsx'
+import { useDeleteEvent } from '@/features/events/hooks/useDeleteEvent.ts'
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip.tsx'
-import { Link } from '@tanstack/react-router'
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog.tsx'
 
 interface EventCardProps {
   event: EventDTO
@@ -25,8 +31,21 @@ interface EventCardProps {
 }
 
 export const EventCard = ({ event, isOwner }: EventCardProps) => {
+  const { mutate: deleteEvent, isPending: isDeleting } = useDeleteEvent()
   const { user } = useAuthStore()
   const isAdmin = user?.role === UserRole.ADMIN
+
+  // Calculate Total Capacity across all tiers for the progress bar
+  const totalCapacity = event.ticketTiers.reduce(
+    (sum, tier) => sum + tier.totalAllocation,
+    0,
+  )
+  const totalAvailable = event.ticketTiers.reduce(
+    (sum, tier) => sum + tier.availableAllocation,
+    0,
+  )
+  const percentAvailable =
+    totalCapacity > 0 ? (totalAvailable / totalCapacity) * 100 : 0
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -41,6 +60,11 @@ export const EventCard = ({ event, isOwner }: EventCardProps) => {
       default:
         return 'bg-slate-800 text-slate-400'
     }
+  }
+
+  const detailLinkProps = {
+    to: '/events/$eventId',
+    params: { eventId: event.id.toString() },
   }
 
   return (
@@ -63,15 +87,20 @@ export const EventCard = ({ event, isOwner }: EventCardProps) => {
             variant="secondary"
             className="bg-slate-950/80 backdrop-blur text-slate-200 border-slate-700"
           >
-            {event.price > 0 ? `$${event.price.toFixed(2)}` : 'FREE'}
+            {event.priceRange || 'Free'}
           </Badge>
         </div>
       </div>
 
       <CardHeader className="p-5 pb-2">
-        <h3 className="text-lg font-semibold text-slate-100 line-clamp-1 group-hover:text-blue-400 transition-colors">
-          {event.title}
-        </h3>
+        <Link
+          {...detailLinkProps}
+          className="hover:underline decoration-blue-500 underline-offset-4"
+        >
+          <h3 className="text-lg font-semibold text-slate-100 line-clamp-1 group-hover:text-blue-400 transition-colors">
+            {event.title}
+          </h3>
+        </Link>
         <div className="flex items-center gap-2 text-sm text-slate-400 mt-1">
           <MapPin className="h-3.5 w-3.5 text-slate-500" />
           <span className="truncate">{event.location || 'Online Event'}</span>
@@ -114,17 +143,23 @@ export const EventCard = ({ event, isOwner }: EventCardProps) => {
         {/* Seat Availability Bar */}
         <div className="space-y-1.5">
           <div className="flex items-center justify-between text-xs text-slate-400">
-            <span>Availability</span>
-            <span>
-              {event.availableSeats} / {event.totalSeats}
+            <span>Ticket Availability</span>
+            <span
+              className={
+                percentAvailable < 20 ? 'text-red-400' : 'text-slate-400'
+              }
+            >
+              {percentAvailable === 0
+                ? 'Sold Out'
+                : `${Math.round(percentAvailable)}% left`}
             </span>
           </div>
           {/* Simple Progress Bar */}
           <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
             <div
-              className="h-full bg-blue-600 rounded-full transition-all"
+              className={`h-full rounded-full transition-all ${percentAvailable < 20 ? 'bg-red-500' : 'bg-blue-600'}`}
               style={{
-                width: `${(event.availableSeats / event.totalSeats) * 100}%`,
+                width: `${percentAvailable}%`,
               }}
             />
           </div>
@@ -147,30 +182,59 @@ export const EventCard = ({ event, isOwner }: EventCardProps) => {
                 <Edit className="h-3.5 w-3.5 mr-2" /> Manage
               </Button>
             </Link>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-red-400 hover:bg-red-950/30 hover:text-red-300"
-                  >
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-red-400 hover:bg-red-950/30 hover:text-red-300"
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
                     <Trash2 className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent className="bg-red-950 border-red-900 text-red-200">
-                  Delete Event
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+                  )}
+                </Button>
+              </AlertDialogTrigger>
+
+              <AlertDialogContent className="bg-slate-950 border-slate-800 text-slate-200">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription className="text-slate-400">
+                    This action cannot be undone. This will permanently delete
+                    the event
+                    <span className="font-semibold text-white">
+                      {' '}
+                      "{event.title}"{' '}
+                    </span>
+                    and remove it from our servers.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel className="bg-transparent border-slate-700 text-slate-300 hover:bg-slate-900 hover:text-white">
+                    Cancel
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => deleteEvent(event.id)}
+                    className="bg-red-600 hover:bg-red-700 text-white"
+                  >
+                    Delete Event
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </>
         ) : (
-          <Button
-            size="sm"
-            className="w-full bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/20"
-          >
-            Book Ticket
-          </Button>
+          <Link {...detailLinkProps} className="w-full">
+            <Button
+              size="sm"
+              disabled={percentAvailable === 0}
+              className="w-full bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/20 disabled:bg-slate-800 disabled:text-slate-500"
+            >
+              {percentAvailable === 0 ? 'Sold Out' : 'Book Ticket'}
+            </Button>
+          </Link>
         )}
       </CardFooter>
     </Card>

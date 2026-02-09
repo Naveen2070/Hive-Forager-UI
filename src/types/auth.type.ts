@@ -23,3 +23,22 @@ export interface AuthResponse {
   token: string
   identifier: string
 }
+
+export interface UpdateProfilePayload {
+  username: string
+  email: string
+}
+
+export interface ChangePasswordPayload {
+  oldPassword?: string
+  newPassword: string
+}
+
+export interface ForgotPasswordRequest {
+  email: string
+}
+
+export interface ResetPasswordRequest {
+  token: string
+  newPassword: string
+}
