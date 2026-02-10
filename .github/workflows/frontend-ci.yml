@@ -1,4 +1,6 @@
 name: EventHive CI (React)
+permissions:
+  contents: read
 
 on:
   push:
