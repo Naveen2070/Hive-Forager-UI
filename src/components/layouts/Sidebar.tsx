@@ -133,12 +133,12 @@ export const Sidebar = () => {
         <div className="flex items-center gap-3 px-2">
           <div className="h-9 w-9 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700">
             <span className="font-semibold text-slate-300">
-              {user?.username.charAt(0).toUpperCase()}
+              {user?.fullName.charAt(0).toUpperCase()}
             </span>
           </div>
           <div className="flex-1 overflow-hidden">
             <p className="text-sm font-medium text-white truncate">
-              {user?.username}
+              {user?.fullName}
             </p>
             <p className="text-xs text-slate-500 truncate capitalize">
               {user?.role.toLowerCase().replace('_', ' ')}

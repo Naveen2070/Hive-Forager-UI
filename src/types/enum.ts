@@ -2,7 +2,6 @@ export enum UserRole {
   USER = 'USER',
   ORGANIZER = 'ORGANIZER',
   ADMIN = 'ADMIN',
-  SUPER_ADMIN = 'SUPER_ADMIN',
 }
 
 export enum EventStatus {

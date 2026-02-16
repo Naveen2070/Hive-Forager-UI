@@ -38,7 +38,8 @@ export const ProfileForm = ({
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(settingsSchema),
     defaultValues: {
-      username: defaultValues?.username || '',
+      fullName: defaultValues?.fullName || '',
+      email: defaultValues?.email
     },
   })
 
@@ -55,7 +56,7 @@ export const ProfileForm = ({
         <div className="flex flex-col md:flex-row items-center gap-6 p-4 bg-slate-900/30 rounded-xl border border-slate-800/50">
           <Avatar className="h-20 w-20 border-2 border-slate-700">
             <AvatarImage
-              src={`https://ui-avatars.com/api/?name=${defaultValues?.username || 'User'}&background=0D8ABC&color=fff`}
+              src={`https://ui-avatars.com/api/?name=${defaultValues?.fullName || 'User'}&background=0D8ABC&color=fff`}
             />
             <AvatarFallback>User</AvatarFallback>
           </Avatar>
@@ -82,7 +83,7 @@ export const ProfileForm = ({
             <div className="grid md:grid-cols-2 gap-6">
               <FormField
                 control={form.control}
-                name="username"
+                name="fullName"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Display Name</FormLabel>

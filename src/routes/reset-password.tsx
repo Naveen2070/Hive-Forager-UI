@@ -16,7 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { userApi } from '@/api/user'
+import { authApi } from '@/api/auth.ts'
 
 export const Route = createFileRoute('/reset-password')({
   component: ResetPasswordPage,
@@ -48,7 +48,7 @@ function ResetPasswordPage() {
 
   const mutation = useMutation({
     mutationFn: (data: z.infer<typeof resetSchema>) =>
-      userApi.resetPassword({ token, newPassword: data.password }),
+      authApi.resetPassword({ token, newPassword: data.password }),
     onSuccess: async() => {
       toast.success('Password reset successfully')
       await navigate({ to: '/login' })
