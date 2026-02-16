@@ -54,7 +54,7 @@ export interface EventDTO {
   ticketTiers: Array<TicketTierDTO>
   priceRange: string
   status: EventStatus
-  organizerId: number
+  organizerId: string
   organizerName: string
   createdAt: string
 }
