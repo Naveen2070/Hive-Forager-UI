@@ -1,31 +1,35 @@
 import type { UserRole } from '@/types/enum.ts'
 
 export interface UserDTO {
-  id: number
-  username: string
+  id: string
+  fullName: string
   email: string
   role: UserRole
+  createdAt: string
+  isActive: boolean
 }
 
 export interface RegisterUserRequest {
-  username: string
+  fullName: string
   email: string
   password: string
+  domainAccess:Array<string>
   role: UserRole
 }
 
 export interface LoginRequest {
-  identifier: string
+  email: string
   password: string
 }
 
 export interface AuthResponse {
   token: string
-  identifier: string
+  refreshToken: string
+  email: string
 }
 
 export interface UpdateProfilePayload {
-  username: string
+  fullName: string
   email: string
 }
 

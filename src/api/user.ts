@@ -8,28 +8,28 @@ import type {
 import { api } from '@/api/axios'
 
 export const userApi = {
-  getById: async (userId: number) => {
-    const res = await api.get<UserDTO>(`/user/users/${userId}`)
+  getSelf: async () => {
+    const res = await api.get<UserDTO>(`/users/me`)
     return res.data
   },
 
-  updateProfile: async (userId: number, data: UpdateProfilePayload) => {
-    const res = await api.put<UserDTO>(`/user/${userId}`, data)
+  updateProfile: async (data: UpdateProfilePayload) => {
+    const res = await api.patch<UserDTO>(`/users/me`, data)
     return res.data
   },
 
-  changePassword: async (userId: number, data: ChangePasswordPayload) => {
-    const res = await api.post<string>(`/user/change-password/${userId}`, data)
+  changePassword: async (data: ChangePasswordPayload) => {
+    const res = await api.post<string>(`/users/change-password`, data)
     return res.data
   },
 
-  forgotPassword: async (data: ForgotPasswordRequest) => {
-    const res = await api.post('/user/forgot-password', data)
+  deactivate: async (data: ForgotPasswordRequest) => {
+    const res = await api.post('/user/deactivate/me', data)
     return res.data
   },
 
-  resetPassword: async (data: ResetPasswordRequest) => {
-    const res = await api.post('/user/reset-password', data)
+  delete: async (data: ResetPasswordRequest) => {
+    const res = await api.post('/user/delete/me', data)
     return res.data
   },
 }

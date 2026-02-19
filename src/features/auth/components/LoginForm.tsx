@@ -23,7 +23,7 @@ export const LoginForm = () => {
     resolver: zodResolver(loginSchema),
     mode: 'onTouched',
     defaultValues: {
-      identifier: '',
+      email: '',
       password: '',
     },
   })
@@ -48,11 +48,11 @@ export const LoginForm = () => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
-            name="identifier"
+            name="email"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-slate-200">
-                  Email or Username
+                  Email
                 </FormLabel>
                 <FormControl>
                   <Input

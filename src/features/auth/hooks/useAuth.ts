@@ -1,7 +1,11 @@
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import { toast } from 'sonner'
-import type { LoginRequest, RegisterUserRequest } from '@/types/auth.type.ts'
+import type {
+  LoginRequest,
+  RegisterUserRequest,
+  UserDTO,
+} from '@/types/auth.type.ts'
 import { UserRole } from '@/types/enum.ts'
 import { useAuthStore } from '@/store/auth.store.ts'
 import { authApi } from '@/api/auth.ts'
@@ -31,13 +35,15 @@ export const useAuth = () => {
       // 2. Construct User
       const user = {
         id: decoded.id,
-        username: decoded.username,
+        fullName: decoded.email.split('@')[0],
         email: decoded.email,
         role: primaryRole as UserRole,
-      }
+        createdAt:"",
+        isActive:true,
+      } as UserDTO
 
       setAuth(user, data.token)
-      toast.success(`Welcome back, ${user.username}!`)
+      toast.success(`Welcome back, ${user.fullName}!`)
       const redirectUrl = search.redirect
 
       if (redirectUrl) {

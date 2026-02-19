@@ -16,7 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { userApi } from '@/api/user'
+import { authApi } from '@/api/auth.ts'
 
 export const Route = createFileRoute('/forgot-password')({
   component: ForgotPasswordPage,
@@ -33,7 +33,7 @@ function ForgotPasswordPage() {
   })
 
   const mutation = useMutation({
-    mutationFn: userApi.forgotPassword,
+    mutationFn: authApi.forgotPassword,
     onSuccess: () => {
       toast.success('Reset link sent!')
     },

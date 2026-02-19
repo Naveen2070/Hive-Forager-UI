@@ -32,10 +32,11 @@ export const RegisterForm = () => {
     resolver: zodResolver(registerSchema),
     mode: 'onTouched',
     defaultValues: {
-      username: '',
+      fullName: '',
       email: '',
       password: '',
       confirmPassword: '',
+      domainAccess: ["events"],
       role: UserRole.USER,
     },
   })
@@ -65,10 +66,10 @@ export const RegisterForm = () => {
           {/* Username */}
           <FormField
             control={form.control}
-            name="username"
+            name="fullName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-slate-200">Username</FormLabel>
+                <FormLabel className="text-slate-200">Full Name</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="johndoe"

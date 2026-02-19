@@ -17,7 +17,7 @@ export const useSettings = () => {
     queryKey: ['user', userId],
     queryFn: () => {
       if (!userId) throw new Error('No user ID')
-      return userApi.getById(userId)
+      return userApi.getSelf()
     },
     enabled: !!userId,
   })
@@ -25,8 +25,7 @@ export const useSettings = () => {
   // 2. Update Profile Mutation
   const updateProfile = useMutation({
     mutationFn: (data: UpdateProfilePayload) => {
-      if (!userId) throw new Error('No user ID')
-      return userApi.updateProfile(userId, data)
+      return userApi.updateProfile(data)
     },
     onSuccess: (updatedUser) => {
       toast.success('Profile updated successfully')
@@ -41,7 +40,7 @@ export const useSettings = () => {
   const changePassword = useMutation({
     mutationFn: (data: ChangePasswordPayload) => {
       if (!userId) throw new Error('No user ID')
-      return userApi.changePassword(userId, data)
+      return userApi.changePassword(data)
     },
     onSuccess: () => {
       toast.success('Password changed successfully')
