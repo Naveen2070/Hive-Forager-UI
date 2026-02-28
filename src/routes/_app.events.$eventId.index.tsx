@@ -1,4 +1,4 @@
-import { Link, createFileRoute, useParams } from '@tanstack/react-router'
+import { createFileRoute, Link, useParams } from '@tanstack/react-router'
 import { ArrowLeft } from 'lucide-react'
 
 import { eventsApi } from '@/api/events'
@@ -11,26 +11,62 @@ import { EventDescription } from '@/features/events/components/detail/EventDescr
 import { EventDetailSkeleton } from '@/features/events/components/detail/EventDetailSkeleton'
 import { useEventDetail } from '@/features/events/hooks/UseEventDetail.ts'
 import { BookingCard } from '@/features/bookings/components/BookingCard.tsx'
+import { DataFallback } from '@/components/shared/DataFallback'
+
+// Shared fetcher so both loader and hooks can use it if needed
+const fetchEventDetail = async (id: number) => {
+  if (import.meta.env.VITE_ENABLE_MOCK_AUTH === 'true') {
+    const { FEATURED_EVENTS_MOCK } = await import('@/api/mocks/events.mock')
+    return (
+      FEATURED_EVENTS_MOCK.content.find((e: any) => e.id === id) ||
+      FEATURED_EVENTS_MOCK.content[0]
+    )
+  }
+  return eventsApi.getById(id)
+}
 
 export const Route = createFileRoute('/_app/events/$eventId/')({
   component: EventDetailsPage,
-  loader: ({ context: { queryClient }, params }) => {
+  loader: async ({ context: { queryClient }, params }) => {
     const eventId = Number(params.eventId)
-    return queryClient.ensureQueryData({
-      queryKey: eventKeys.detail(eventId),
-      queryFn: () => eventsApi.getById(eventId),
-    })
+    try {
+      await queryClient.ensureQueryData({
+        queryKey: eventKeys.detail(eventId),
+        queryFn: () => fetchEventDetail(eventId),
+      })
+    } catch (error) {
+      console.error('Failed to load event details:', error)
+    }
   },
 })
 
 function EventDetailsPage() {
   const { eventId } = useParams({ from: '/_app/events/$eventId/' })
-  const { event, isLoading } = useEventDetail(Number(eventId))
 
-  if (isLoading || !event) return <EventDetailSkeleton />
+  const { event, isLoading, isError, refetch } = useEventDetail(Number(eventId))
+
+  if (isLoading) return <EventDetailSkeleton />
+
+  if (isError || !event) {
+    return (
+      <div className="max-w-5xl mx-auto space-y-8 py-8 px-4">
+        <Link
+          to="/events"
+          className="inline-flex items-center text-sm text-slate-400 hover:text-blue-400 transition-colors"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Events
+        </Link>
+        <DataFallback
+          title="Event Not Found"
+          message="Our worker bees couldn't locate this event. It might have been moved or canceled."
+          onRetry={refetch}
+        />
+      </div>
+    )
+  }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8">
+    <div className="max-w-5xl mx-auto space-y-8 py-8 px-4">
       {/* Back Button */}
       <Link
         to="/events"

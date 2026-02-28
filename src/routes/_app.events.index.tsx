@@ -8,12 +8,13 @@ import { EventFiltersBar } from '@/features/events/components/EventFiltersBar'
 import { EventGrid } from '@/features/events/components/EventGrid'
 import { useEventQueries } from '@/features/events/hooks/useEventQueries'
 
-// API & Store
+// API & Store & Fallbacks
 import { eventsApi } from '@/api/events'
 import { useAuthStore } from '@/store/auth.store'
 import { UserRole } from '@/types/enum'
 import { eventKeys } from '@/features/events/events.keys.ts'
 import { PaginationBar } from '@/components/shared/pagination-bar.tsx'
+import { DataFallback } from '@/components/shared/DataFallback'
 
 export const Route = createFileRoute('/_app/events/')({
   component: EventsPage,
@@ -23,17 +24,33 @@ export const Route = createFileRoute('/_app/events/')({
     const { user } = useAuthStore.getState()
     const isOrganizer = user?.role === UserRole.ORGANIZER
 
-    const promises = []
-
     const defaultFilters = {
       status: 'PUBLISHED',
     }
+
+    const fetchPublicEvents = async () => {
+      if (import.meta.env.VITE_ENABLE_MOCK_AUTH === 'true') {
+        const { FEATURED_EVENTS_MOCK } = await import('@/api/mocks/events.mock')
+        return FEATURED_EVENTS_MOCK
+      }
+      return eventsApi.getAll(0, 12, defaultFilters)
+    }
+
+    const fetchMyEvents = async () => {
+      if (import.meta.env.VITE_ENABLE_MOCK_AUTH === 'true') {
+        const { FEATURED_EVENTS_MOCK } = await import('@/api/mocks/events.mock')
+        return FEATURED_EVENTS_MOCK
+      }
+      return eventsApi.getMyEvents(0, 12)
+    }
+
+    const promises = []
 
     // Public Events
     promises.push(
       queryClient.ensureQueryData({
         queryKey: eventKeys.public(defaultFilters, 0),
-        queryFn: () => eventsApi.getAll(0, 12, defaultFilters),
+        queryFn: fetchPublicEvents,
         staleTime: 1000 * 60,
       }),
     )
@@ -43,14 +60,13 @@ export const Route = createFileRoute('/_app/events/')({
       promises.push(
         queryClient.ensureQueryData({
           queryKey: eventKeys.mine(0),
-          queryFn: () => eventsApi.getMyEvents(0, 12),
+          queryFn: fetchMyEvents,
           staleTime: 1000 * 60 * 5,
         }),
       )
     }
 
-    // Wait for data to be ready
-    await Promise.all(promises)
+    await Promise.allSettled(promises)
   },
 })
 
@@ -65,10 +81,13 @@ function EventsPage() {
     page,
     setPage,
   } = useEventQueries()
-  const [section, setSection] = useState<'mine' | 'browse'>(isOrganizer ? 'mine' : 'browse')
+  const [section, setSection] = useState<'mine' | 'browse'>(
+    isOrganizer ? 'mine' : 'browse',
+  )
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-6 md:p-8">
+      {/* Header & Filters stay visible even if data fails */}
       <EventHeader isOrganizer={isOrganizer} />
 
       <EventFiltersBar
@@ -99,56 +118,88 @@ function EventsPage() {
           </TabsList>
 
           <TabsContent value="mine" className="mt-6">
-            <EventGrid
-              isLoading={myEvents.isLoading}
-              data={myEvents.data?.content}
-              emptyMessage="You haven't created any events yet."
-              isOwner={true}
-            />
-            {myEvents.data && (
-              <PaginationBar
-                page={page}
-                totalPages={myEvents.data.totalPages}
-                onPageChange={setPage}
-                isPlaceholderData={myEvents.isPlaceholderData}
+            {/* 👉 2. Graceful Error Handling for "My Events" */}
+            {myEvents.isError ? (
+              <DataFallback
+                title="Failed to load your events"
+                message="Our worker bees hit a snag communicating with the hive. Please try again."
+                onRetry={() => myEvents.refetch()}
               />
+            ) : (
+              <>
+                <EventGrid
+                  isLoading={myEvents.isLoading}
+                  data={myEvents.data?.content}
+                  emptyMessage="You haven't hosted any events yet. Time to create some buzz!"
+                  isOwner={true}
+                />
+                {myEvents.data && myEvents.data.content.length > 0 && (
+                  <PaginationBar
+                    page={page}
+                    totalPages={myEvents.data.totalPages}
+                    onPageChange={setPage}
+                    isPlaceholderData={myEvents.isPlaceholderData}
+                  />
+                )}
+              </>
             )}
           </TabsContent>
 
           <TabsContent value="browse" className="mt-6">
-            <EventGrid
-              isLoading={publicEvents.isLoading}
-              data={publicEvents.data?.content}
-              emptyMessage="No events found matching your search."
-              isOwner={false}
-            />
-            {publicEvents.data && (
-              <PaginationBar
-                page={page}
-                totalPages={publicEvents.data.totalPages}
-                onPageChange={setPage}
-                isPlaceholderData={publicEvents.isPlaceholderData}
+            {publicEvents.isError ? (
+              <DataFallback
+                title="Failed to load events"
+                message="Our worker bees couldn't fetch the public events right now."
+                onRetry={() => publicEvents.refetch()}
               />
+            ) : (
+              <>
+                <EventGrid
+                  isLoading={publicEvents.isLoading}
+                  data={publicEvents.data?.content}
+                  emptyMessage="No events found matching your search criteria."
+                  isOwner={false}
+                />
+                {publicEvents.data && publicEvents.data.content.length > 0 && (
+                  <PaginationBar
+                    page={page}
+                    totalPages={publicEvents.data.totalPages}
+                    onPageChange={setPage}
+                    isPlaceholderData={publicEvents.isPlaceholderData}
+                  />
+                )}
+              </>
             )}
           </TabsContent>
         </Tabs>
       ) : (
-        <>
-          <EventGrid
-            isLoading={publicEvents.isLoading}
-            data={publicEvents.data?.content}
-            emptyMessage="No events found matching your search."
-            isOwner={false}
-          />
-          {publicEvents.data && (
-            <PaginationBar
-              page={page}
-              totalPages={publicEvents.data.totalPages}
-              onPageChange={setPage}
-              isPlaceholderData={publicEvents.isPlaceholderData}
+        /* Attendee View (Browse All) */
+        <div className="mt-6">
+          {publicEvents.isError ? (
+            <DataFallback
+              title="Failed to load events"
+              message="Our worker bees couldn't fetch the events right now."
+              onRetry={() => publicEvents.refetch()}
             />
+          ) : (
+            <>
+              <EventGrid
+                isLoading={publicEvents.isLoading}
+                data={publicEvents.data?.content}
+                emptyMessage="No events found matching your search criteria."
+                isOwner={false}
+              />
+              {publicEvents.data && publicEvents.data.content.length > 0 && (
+                <PaginationBar
+                  page={page}
+                  totalPages={publicEvents.data.totalPages}
+                  onPageChange={setPage}
+                  isPlaceholderData={publicEvents.isPlaceholderData}
+                />
+              )}
+            </>
           )}
-        </>
+        </div>
       )}
     </div>
   )
