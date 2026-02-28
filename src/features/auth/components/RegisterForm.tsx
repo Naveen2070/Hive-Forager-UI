@@ -36,7 +36,7 @@ export const RegisterForm = () => {
       email: '',
       password: '',
       confirmPassword: '',
-      domainAccess: ["events"],
+      domainAccess: ['events', 'movies'], // Updated to reflect polyglot ecosystem
       role: UserRole.USER,
     },
   })
@@ -57,13 +57,13 @@ export const RegisterForm = () => {
           Create an account
         </h1>
         <p className="text-sm text-slate-400">
-          Join the hive to start booking or hosting events
+          Join the hive to discover events and book movie tickets
         </p>
       </div>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          {/* Username */}
+          {/* Full Name */}
           <FormField
             control={form.control}
             name="fullName"
@@ -72,7 +72,7 @@ export const RegisterForm = () => {
                 <FormLabel className="text-slate-200">Full Name</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="johndoe"
+                    placeholder="Jane Doe"
                     {...field}
                     className={inputStyles}
                   />
@@ -91,7 +91,7 @@ export const RegisterForm = () => {
                 <FormLabel className="text-slate-200">Email</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="john@example.com"
+                    placeholder="jane@hiveforager.com"
                     {...field}
                     className={inputStyles}
                   />
@@ -119,15 +119,16 @@ export const RegisterForm = () => {
                   </FormControl>
                   <SelectContent className="bg-slate-900 border-slate-800 text-slate-100">
                     <SelectItem value={UserRole.USER}>
-                      Book Tickets (Attendee)
+                      Book Tickets (Consumer)
                     </SelectItem>
                     <SelectItem value={UserRole.ORGANIZER}>
-                      Host Events (Organizer)
+                      Host Events & Cinemas (Organizer)
                     </SelectItem>
                   </SelectContent>
                 </Select>
                 <FormDescription className="text-slate-500 text-xs">
-                  Organizers can create events; Attendees can only book them.
+                  Organizers can manage cinemas and events; Consumers can browse
+                  and book.
                 </FormDescription>
                 <FormMessage className="text-red-400" />
               </FormItem>

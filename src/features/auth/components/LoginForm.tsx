@@ -51,12 +51,10 @@ export const LoginForm = () => {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-slate-200">
-                  Email
-                </FormLabel>
+                <FormLabel className="text-slate-200">Email</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="user@eventhive.com"
+                    placeholder="user@hiveforager.com"
                     {...field}
                     className="bg-slate-900/50 border-slate-800 focus-visible:ring-blue-500/50 text-slate-100 placeholder:text-slate-500"
                   />

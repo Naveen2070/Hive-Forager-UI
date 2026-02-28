@@ -5,7 +5,7 @@ import type { EventFilters } from '@/types/event.type'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { DatePickerWithRange } from '@/components/common/date-range-picker'
+import { DatePickerWithRange } from '@/components/shared/date-range-picker'
 import {
   Popover,
   PopoverContent,

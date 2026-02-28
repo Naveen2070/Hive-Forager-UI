@@ -25,7 +25,7 @@ export const OrganizerCTA = () => {
             Ready to host your own event?
           </h2>
           <p className="text-lg text-slate-300 max-w-2xl mx-auto">
-            Join thousands of organizers who use EventHub to manage tickets,
+            Join thousands of organizers who use Hive Forager to manage tickets,
             track sales, and grow their community.
           </p>
           <Link to="/register">
@@ -33,7 +33,7 @@ export const OrganizerCTA = () => {
               size="lg"
               className="bg-blue-600 hover:bg-blue-500 shadow-xl shadow-blue-900/20 group"
             >
-              Get Started for Free
+              Become an Organizer
               <motion.span
                 className="inline-block ml-2"
                 animate={{ x: [0, 4, 0] }}

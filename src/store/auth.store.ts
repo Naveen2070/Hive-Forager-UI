@@ -22,16 +22,36 @@ export const useAuthStore = create<AuthState>()(
 
       setAuth: (user, token) => set({ user, token, isAuthenticated: true }),
       clearAuth: () => set({ user: null, token: null, isAuthenticated: false }),
+
       logout: async () => {
-        await authApi.logout()
+        if (import.meta.env.VITE_ENABLE_MOCK_AUTH !== 'true') {
+          try {
+            await authApi.logout()
+          } catch (error) {
+            console.error('Logout API call failed', error)
+          }
+        }
+
         set({ user: null, token: null, isAuthenticated: false })
         const queryContext = getContext()
         queryContext.queryClient.clear()
       },
     }),
     {
-      name: 'event-hive-session',
+      name: 'hive-forager-session',
       storage: createJSONStorage(() => sessionStorage),
     },
   ),
 )
+
+if (import.meta.env.VITE_ENABLE_MOCK_AUTH === 'true') {
+  import('@/api/mocks/auth.mock.ts')
+    .then(({ MOCK_USER, MOCK_TOKEN }) => {
+      useAuthStore.setState({
+        user: MOCK_USER,
+        token: MOCK_TOKEN,
+        isAuthenticated: true,
+      })
+    })
+    .catch(console.error)
+}

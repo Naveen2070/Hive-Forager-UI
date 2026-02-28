@@ -1,37 +1,28 @@
-# EventHive - Frontend 🐝
+# Hive Forager - UI 🐝
 
-> A modern, type-safe, and high-performance React frontend for the EventHive platform, built with **Vite**, **TanStack Router**, and **Tailwind CSS**.
+> A modern, type-safe, and high-performance React frontend for the **Hive Ecosystem**, built with **Vite 7**, **TanStack Router**, and **React 19**.
 
-The EventHive Frontend is a production-ready single-page application (SPA) designed to provide a seamless experience for both Attendees and Organizers. It features a responsive **Dark Mode** UI, complex form handling with validation, real-time dashboards, and a mobile-optimized QR scanner for event entry.
+**Hive Forager** is the unified "Super App" portal for consumers and organizers. It provides a seamless experience for browsing global events, reserving cinema seats via an interactive CSS grid, and managing digital wallets.
 
 ---
 
-### 🔗 Backend Repository
-This frontend is designed to consume the **EventHive API**.
-👉 **[View the Backend Repository here](https://github.com/Naveen2070/EventHive)**
+### 🔗 The Ecosystem Hub
+
+This frontend consumes the polyglot backend APIs (Spring Boot for Events/Identity, and .NET 8 for Movies) routed through our Nginx Gateway.
+👉 **[View the Central Hive Infrastructure Hub Here](https://www.google.com/search?q=https://github.com/Naveen2070/The-Hive-Project)**
 
 ---
 
 ## 🚀 Key Features
 
-* **🎨 Modern UI/UX:** Built with **Shadcn UI** and **Tailwind CSS** for a sleek, accessible, and responsive dark-mode interface.
-* **🔐 Secure Authentication:** Complete flow including Login, Registration, and **Forgot/Reset Password** handling with JWT storage.
-  
-**👤 User Dashboard:**
-* **Digital Wallet:** View active tickets and booking history.
-* **QR Generation:** Auto-generates unique QR codes for entry.
-* **Profile Settings:** Manage display name, security settings, and password updates.
-
-
-**🕵️ Organizer Tools:**
-* **Analytics Dashboard:** Visual revenue charts and "Recent Sales" feeds.
-* **Event Management:** Create and edit events with multi-tier ticketing options.
-* **Ticket Scanner:** Mobile-first camera interface for validating attendee tickets in real-time.
-
-
-**⚡ Performance First:**
-* **Type-Safe Routing:** Uses **TanStack Router** for 100% type-safe navigation and automatic code splitting.
-* **Server State Management:** Uses **TanStack Query** for caching, optimistic updates, and background refetching.
+* **🎬 Cinema & Ticketing (New):** Browse movie showtimes and book tickets using a highly interactive, real-time CSS Grid seat selection engine.
+* **🎨 Modern UI/UX:** Built with **Shadcn UI**, **Tailwind CSS v4**, and **Framer Motion** for a sleek, responsive, dark-mode-first interface.
+* **🔐 Mock Auth for Devs:** Includes a dedicated `.env` bypass flag so frontend developers can build UI components without needing to spin up the entire backend database and gateway.
+* **👤 Digital Wallet:** Users can view active tickets, booking history, and auto-generated QR codes for entry.
+* **🕵️ Organizer Tools:** Features visual revenue charts, "Recent Sales" feeds, event creation forms, and a mobile-first camera interface for scanning attendee QR tickets.
+* **⚡ Performance First:** * Uses the experimental **React Compiler** (`babel-plugin-react-compiler`) for automatic memoization.
+* **TanStack Router** for 100% type-safe, file-based routing and auto-code-splitting.
+* **TanStack Query** for aggressive caching and server-state synchronization.
 
 
 
@@ -39,13 +30,12 @@ This frontend is designed to consume the **EventHive API**.
 
 ## 🛠️ Tech Stack
 
-* **Core:** React 18, TypeScript, Vite
+* **Core:** React 19, TypeScript, Vite 7
 * **Routing:** TanStack Router (File-based routing)
-* **State Management:** TanStack Query (Server State), Zustand (Client State)
-* **Styling:** Tailwind CSS, Shadcn UI (Radix Primitives), Lucide Icons
+* **State Management:** TanStack Query (Server State), Zustand (Client State / Auth)
+* **Styling:** Tailwind CSS v4, Shadcn UI (Radix Primitives), Lucide Icons
 * **Forms:** React Hook Form + Zod Validation
 * **Visualization:** Recharts (Analytics), React QR Code
-* **Animation:** Framer Motion
 
 ---
 
@@ -75,21 +65,20 @@ src
 ├── store               # Global state (Zustand - e.g., AuthStore)
 └── types               # TypeScript interfaces (DTOs)
 ```
-
 ---
 
-## ⚙️ Getting Started
+## ⚙️ Getting Started (Local Development)
 
 ### Prerequisites
 
-* Node.js 18+
-* npm or yarn
+* Node.js 22+
+* npm
 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/Naveen2070/EventHive-UI
-cd EventHive-Frontend
+git clone https://github.com/Naveen2070/Hive-Forager-UI.git
+cd Hive-Forager-UI
 ```
 
 ### 2. Install Dependencies
@@ -98,70 +87,67 @@ cd EventHive-Frontend
 npm install
 ```
 
-### 3. Environment Setup
+### 3. Environment Setup & Mock Authentication
 
-Create a `.env` file in the root directory. By default, the app proxies requests to `http://localhost:8080` to avoid CORS issues.
+Create a `.env.development` file in the root directory.
+
+If you are just working on CSS or UI components and don't want to run the Spring Boot & .NET backends, you can enable the Mock Auth bypass to jump straight into the app with Admin privileges:
 
 ```env
-# Optional: Only needed if backend is not on localhost:8080
-VITE_API_URL=http://localhost:8080/api
+# Bypass the login screen and use mock data for UI development
+VITE_ENABLE_MOCK_AUTH=true
+
+# The API Gateway URL (if running the full Docker ecosystem)
+VITE_API_URL=/api
 ```
 
-### 4. Run Development Server
+### 4. Run the Development Server
 
 ```bash
 npm run dev
 ```
 
-The application will be available at `http://localhost:3001` (or the port shown in your terminal).
+The application will be available at `http://localhost:3001`. The Vite server is configured to proxy `/api` requests to `http://localhost:8080` to avoid CORS issues during local development.
 
 ---
 
 ## 🔌 Route Overview
 
-| Path                  | Description                   | Access        |
-|-----------------------|-------------------------------|---------------|
-| `/`                   | Landing Page (Hero, Features) | Public        |
-| `/login`, `/register` | Authentication                | Public        |
-| `/events`             | Browse all events             | Public        |
-| `/events/{id}`        | Event Details & Booking       | Public        |
-| `/dashboard`          | **Organizer Analytics**       | `ORGANIZER`   |
-| `/events/create`      | Create new event              | `ORGANIZER`   |
-| `/organizer/scan`     | **QR Ticket Scanner**         | `ORGANIZER`   |
-| `/bookings`           | **My Wallet** (Tickets)       | `USER`        |
-| `/settings`           | Account Profile & Security    | Authenticated |
+| Path                  | Description                        | Access        |
+|-----------------------|------------------------------------|---------------|
+| `/`                   | Landing Page (Hero, Features)      | Public        |
+| `/login`, `/register` | Authentication                     | Public        |
+| `/events`             | Browse all events                  | Public        |
+| `/events/{id}`        | Event Details & Booking            | Public        |
+| `/events/create`      | Create new event                   | `ORGANIZER`   |
+| `/movies`             | **Browse Movie Catalog**           | Public        |
+| `/movies/{id}`        | **Movie Details & Showtimes**      | Public        |
+| `/movies/checkout`    | **Interactive Seat Map & Booking** | Authenticated |
+| `/dashboard`          | Organizer Analytics                | `ORGANIZER`   |
+| `/organizer/scan`     | Mobile QR Ticket Scanner           | `ORGANIZER`   |
+| `/bookings`           | My Wallet (Tickets & QR Codes)     | `USER`        |
+| `/settings`           | Account Profile & Security         | Authenticated |
 
 ---
 
 ## 📦 Building for Production
 
-To create an optimized production build:
+This app uses a highly optimized multi-stage Docker build.
+
+To create an optimized production build locally:
 
 ```bash
 npm run build
 ```
 
-This generates static files in the `dist/` directory.
+### Docker Deployment
 
-### Deployment Note
+The included `Dockerfile` builds the application using Node 22 and serves the static assets using a lightweight **Nginx Alpine** image.
 
-Since this is an SPA, ensure your web server (Nginx, Vercel, or Spring Boot) redirects all 404 requests to `index.html` so that TanStack Router can handle the client-side routing.
-
----
-
-## 📜 License
-
-This project is licensed under the MIT License.
-
----
-
-## 🎨 UI Preview
-
-The application features a responsive layout that adapts from Desktop Dashboards to Mobile Scanners.
-
-* **Dashboard:** Uses Grid layouts for KPI cards and Charts.
-* **Scanner:** Uses absolute positioning overlays for the camera view.
-* **Settings:** Uses Tabbed interfaces with animated transitions.
+```bash
+docker build -t hive-forager-ui .
+docker run -p 80:80 hive-forager-ui
+```
 
 ---
 

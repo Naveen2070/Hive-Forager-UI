@@ -13,7 +13,7 @@ import { eventsApi } from '@/api/events'
 import { useAuthStore } from '@/store/auth.store'
 import { UserRole } from '@/types/enum'
 import { eventKeys } from '@/features/events/events.keys.ts'
-import { PaginationBar } from '@/components/common/pagination-bar.tsx'
+import { PaginationBar } from '@/components/shared/pagination-bar.tsx'
 
 export const Route = createFileRoute('/_app/events/')({
   component: EventsPage,

@@ -8,12 +8,22 @@ import { eventKeys } from '@/features/events/events.keys'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton.tsx'
+import { Skeleton } from '@/components/ui/skeleton'
+import { env } from '@/env.ts'
+
+const fetchFeaturedEvents = async () => {
+  if (env.VITE_ENABLE_MOCK_AUTH === 'true') {
+    const { FEATURED_EVENTS_MOCK } =
+      await import('@/api/mocks/events.mock')
+    return FEATURED_EVENTS_MOCK
+  }
+  return eventsApi.getAll(0, 3, { status: 'PUBLISHED' })
+}
 
 export const FeaturedEvents = () => {
   const { data, isLoading } = useQuery({
     queryKey: eventKeys.public({ status: 'PUBLISHED' }, 0),
-    queryFn: () => eventsApi.getAll(0, 3, { status: 'PUBLISHED' }),
+    queryFn: fetchFeaturedEvents,
   })
 
   if (isLoading)
@@ -107,7 +117,7 @@ export const FeaturedEvents = () => {
                     <div className="flex items-center text-sm text-slate-500 gap-4">
                       <div className="flex items-center gap-1">
                         <MapPin className="h-4 w-4" />
-                        <span className="truncate max-w-25">
+                        <span className="truncate max-w-50">
                           {event.location}
                         </span>
                       </div>
