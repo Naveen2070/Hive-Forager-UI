@@ -1,33 +1,59 @@
 import { useState } from 'react'
-import { Link, createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { Calendar, History, Search, Sparkles, Ticket } from 'lucide-react'
 import { AnimatePresence, motion } from 'framer-motion'
 
 import { useMyBookings } from '@/features/bookings/hooks/useMyBookings'
 import { TicketCard } from '@/features/bookings/components/TicketCard'
-import { HistoryTicketRow } from '@/features/bookings/components/HistoryTicketRow' // Import new row
+import { HistoryTicketRow } from '@/features/bookings/components/HistoryTicketRow'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { bookingsApi } from '@/api/booking.ts'
 import { bookingKeys } from '@/features/bookings/bookings.keys.ts'
 import { BookingStatus } from '@/types/enum'
+import { DataFallback } from '@/components/shared/DataFallback'
+
+const fetchMyBookings = async () => {
+  if (import.meta.env.VITE_ENABLE_MOCK_AUTH === 'true') {
+    const { MY_BOOKINGS_MOCK } = await import('@/api/mocks/bookings.mock')
+    return MY_BOOKINGS_MOCK
+  }
+  return bookingsApi.getMyBookings()
+}
 
 export const Route = createFileRoute('/_app/bookings/')({
   component: MyBookingsPage,
-  loader: ({ context: { queryClient } }) => {
-    return queryClient.ensureQueryData({
-      queryKey: bookingKeys.mine(),
-      queryFn: bookingsApi.getMyBookings,
-    })
+  loader: async ({ context: { queryClient } }) => {
+    try {
+      await queryClient.ensureQueryData({
+        queryKey: bookingKeys.mine(),
+        queryFn: fetchMyBookings,
+      })
+    } catch (error) {
+      console.error('Failed to load bookings:', error)
+    }
   },
 })
 
 function MyBookingsPage() {
-  const { data: bookingsData, isLoading } = useMyBookings()
+  const { data: bookingsData, isLoading, isError, refetch } = useMyBookings()
   const bookings = bookingsData?.content
   const [viewMode, setViewMode] = useState<'upcoming' | 'history'>('upcoming')
 
   if (isLoading) return <BookingsSkeleton />
+
+  if (isError) {
+    return (
+      <div className="max-w-4xl mx-auto py-16 px-4 min-h-screen">
+        <DataFallback
+          title="Wallet Unavailable"
+          message="We couldn't retrieve your tickets and receipts at this time."
+          onRetry={refetch}
+        />
+      </div>
+    )
+  }
+
   if (!bookings || bookings.length === 0) return <EmptyState />
 
   const now = new Date()

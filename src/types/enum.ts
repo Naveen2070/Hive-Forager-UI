@@ -28,3 +28,20 @@ export enum ScanStatus {
   ERROR = 'error',
   ALREADY_SCANNED = 'already_scanned',
 }
+export enum CinemaApprovalStatus {
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+}
+
+export enum SeatStatus {
+  AVAILABLE = 'Available',
+  RESERVED = 'Reserved',
+  SOLD = 'Sold',
+}
+
+export enum TicketStatus {
+  PENDING = 'Pending',
+  PAID = 'Paid',
+  CANCELLED = 'Cancelled',
+}

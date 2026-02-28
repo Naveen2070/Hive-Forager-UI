@@ -1,4 +1,4 @@
-import { Link, createFileRoute, useParams } from '@tanstack/react-router'
+import { createFileRoute, Link, useParams } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 
@@ -9,15 +9,32 @@ import { CreateEventForm } from '@/features/events/components/CreateEventForm'
 import { useUpdateEvent } from '@/features/events/hooks/useUpdateEvent'
 import { EventStatusCard } from '@/features/events/components/EventStatusCard'
 import { TicketTierManager } from '@/features/events/components/ticket-tier/TicketTierManager.tsx'
+import { DataFallback } from '@/components/shared/DataFallback' // 👉 New Fallback
+
+// Shared fetcher so both loader and hooks can use it
+const fetchEventDetail = async (id: number) => {
+  if (import.meta.env.VITE_ENABLE_MOCK_AUTH === 'true') {
+    const { FEATURED_EVENTS_MOCK } = await import('@/api/mocks/events.mock')
+    return (
+      FEATURED_EVENTS_MOCK.content.find((e: any) => e.id === id) ||
+      FEATURED_EVENTS_MOCK.content[0]
+    )
+  }
+  return eventsApi.getById(id)
+}
 
 export const Route = createFileRoute('/_app/events/$eventId/edit')({
   component: EditEventPage,
-  loader: ({ context: { queryClient }, params }) => {
+  loader: async ({ context: { queryClient }, params }) => {
     const eventId = Number(params.eventId)
-    return queryClient.ensureQueryData({
-      queryKey: eventKeys.detail(eventId),
-      queryFn: () => eventsApi.getById(eventId),
-    })
+    try {
+      await queryClient.ensureQueryData({
+        queryKey: eventKeys.detail(eventId),
+        queryFn: () => fetchEventDetail(eventId),
+      })
+    } catch (error) {
+      console.error('Failed to load event details:', error)
+    }
   },
 })
 
@@ -26,18 +43,41 @@ function EditEventPage() {
   const id = Number(eventId)
 
   // Fetch Existing Data
-  const { data: event, isLoading } = useQuery({
+  const {
+    data: event,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
     queryKey: eventKeys.detail(id),
-    queryFn: () => eventsApi.getById(id),
+    queryFn: () => fetchEventDetail(id), // 👉 Pointed to the mock-aware fetcher
   })
 
   // Mutation Hook
   const { mutate: updateEvent, isPending: isSaving } = useUpdateEvent(id)
 
-  if (isLoading || !event) {
+  if (isLoading) {
     return (
       <div className="flex h-[50vh] items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+      </div>
+    )
+  }
+
+  if (isError || !event) {
+    return (
+      <div className="max-w-4xl mx-auto py-8 px-4 space-y-8">
+        <Link
+          to="/events"
+          className="text-sm text-slate-400 hover:text-blue-400 flex items-center gap-1 mb-4 transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" /> Back to My Events
+        </Link>
+        <DataFallback
+          title="Failed to Load Event"
+          message="Our worker bees couldn't fetch the details for this event to edit."
+          onRetry={refetch}
+        />
       </div>
     )
   }
@@ -51,8 +91,6 @@ function EditEventPage() {
     endDate: event.endDate.slice(0, 16),
     organizerEmail: event.organizerName,
     createdBy: String(event.organizerId),
-    // We pass tiers so the form validation passes,
-    // but remember useUpdateEvent ignores changes to this field.
     ticketTiers: event.ticketTiers,
   }
 
@@ -101,7 +139,6 @@ function EditEventPage() {
       </div>
 
       {/* Section 2: Ticket Management */}
-      {/* We separate this visually so the user knows it's distinct from the form above */}
       <div className="pt-8 space-y-6">
         <div className="flex items-center gap-2 pb-2 border-b border-slate-800">
           <h2 className="text-xl font-bold text-slate-100">

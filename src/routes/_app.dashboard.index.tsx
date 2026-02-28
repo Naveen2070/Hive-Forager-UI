@@ -6,22 +6,36 @@ import { RecentSales } from '@/features/dashboard/components/RecentSales'
 import { Button } from '@/components/ui/button'
 import { useDashboardStats } from '@/features/dashboard/hooks/useDashboardStats.ts'
 import { DashboardSkeleton } from '@/features/dashboard/components/DashboardSkeleton.tsx'
+import { DataFallback } from '@/components/shared/DataFallback.tsx'
 
 export const Route = createFileRoute('/_app/dashboard/')({
   component: DashboardPage,
 })
 
 function DashboardPage() {
-  const { data: stats, isLoading, error } = useDashboardStats()
+  const { data: stats, isLoading, error, refetch } = useDashboardStats()
 
   if (isLoading) {
     return <DashboardSkeleton />
   }
 
   if (error || !stats) {
-    return <div className="text-red-500">Failed to load dashboard data.</div>
-  }
+    return (
+      <div className="flex-1 space-y-8 p-8 pt-6">
+        <div className="flex items-center justify-between space-y-2">
+          <h2 className="text-3xl font-bold tracking-tight text-white">
+            Dashboard
+          </h2>
+        </div>
 
+        <DataFallback
+          title="Analytics Server Unreachable"
+          message="We couldn't load your dashboard statistics right now."
+          onRetry={refetch}
+        />
+      </div>
+    )
+  }
   return (
     <div className="flex-1 space-y-8 p-8 pt-6">
       {/* Header */}
