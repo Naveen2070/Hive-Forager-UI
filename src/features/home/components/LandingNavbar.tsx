@@ -1,25 +1,43 @@
 import { Link } from '@tanstack/react-router'
-import { Ticket } from 'lucide-react'
+import { Hexagon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/store/auth.store'
+import { UserRole } from '@/types/enum.ts'
 
 export const LandingNavbar = () => {
-  const { isAuthenticated } = useAuthStore()
+  const { isAuthenticated ,user} = useAuthStore()
+  const isOrganizer = user?.role === UserRole.ORGANIZER
 
   return (
     <header className="border-b border-slate-800 sticky top-0 bg-slate-950/80 backdrop-blur-md z-50">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-2 font-bold text-xl">
+        <Link
+          to="/"
+          className="flex items-center gap-2 font-bold text-xl hover:opacity-80 transition-opacity"
+        >
           <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center">
-            <Ticket className="h-5 w-5 text-white" />
+            <Hexagon className="h-5 w-5 text-white fill-white/20" />
           </div>
-          <span>EventHub</span>
-        </div>
+          <span className="bg-clip-text text-transparent bg-linear-to-r from-slate-100 to-slate-400">
+            Hive Forager
+          </span>
+        </Link>
+
+        <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
+          <Link to="/events" className="hover:text-white transition-colors">
+            Events
+          </Link>
+          <Link to="/movies" className="hover:text-white transition-colors">
+            Movies
+          </Link>
+        </nav>
 
         <div className="flex items-center gap-4">
           {isAuthenticated ? (
-            <Link to="/events">
-              <Button>Go to Dashboard</Button>
+            <Link to={isOrganizer ? '/dashboard' : '/bookings'}>
+              <Button className="bg-blue-600 hover:bg-blue-500">
+                Go to Dashboard
+              </Button>
             </Link>
           ) : (
             <>

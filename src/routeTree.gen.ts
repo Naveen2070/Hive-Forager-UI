@@ -17,11 +17,13 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRegisterRouteImport } from './routes/_auth.register'
 import { Route as AuthLoginRouteImport } from './routes/_auth.login'
 import { Route as AppSettingsRouteImport } from './routes/_app.settings'
+import { Route as AppMoviesIndexRouteImport } from './routes/_app.movies.index'
 import { Route as AppEventsIndexRouteImport } from './routes/_app.events.index'
 import { Route as AppDashboardIndexRouteImport } from './routes/_app.dashboard.index'
 import { Route as AppBookingsIndexRouteImport } from './routes/_app.bookings.index'
 import { Route as AppOrganizerScanRouteImport } from './routes/_app.organizer.scan'
 import { Route as AppEventsCreateRouteImport } from './routes/_app.events.create'
+import { Route as AppMoviesMovieIdIndexRouteImport } from './routes/_app.movies.$movieId.index'
 import { Route as AppEventsEventIdIndexRouteImport } from './routes/_app.events.$eventId.index'
 import { Route as AppEventsEventIdEditRouteImport } from './routes/_app.events.$eventId.edit'
 
@@ -63,6 +65,11 @@ const AppSettingsRoute = AppSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AppRoute,
 } as any)
+const AppMoviesIndexRoute = AppMoviesIndexRouteImport.update({
+  id: '/movies/',
+  path: '/movies/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppEventsIndexRoute = AppEventsIndexRouteImport.update({
   id: '/events/',
   path: '/events/',
@@ -88,6 +95,11 @@ const AppEventsCreateRoute = AppEventsCreateRouteImport.update({
   path: '/events/create',
   getParentRoute: () => AppRoute,
 } as any)
+const AppMoviesMovieIdIndexRoute = AppMoviesMovieIdIndexRouteImport.update({
+  id: '/movies/$movieId/',
+  path: '/movies/$movieId/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppEventsEventIdIndexRoute = AppEventsEventIdIndexRouteImport.update({
   id: '/events/$eventId/',
   path: '/events/$eventId/',
@@ -111,8 +123,10 @@ export interface FileRoutesByFullPath {
   '/bookings/': typeof AppBookingsIndexRoute
   '/dashboard/': typeof AppDashboardIndexRoute
   '/events/': typeof AppEventsIndexRoute
+  '/movies/': typeof AppMoviesIndexRoute
   '/events/$eventId/edit': typeof AppEventsEventIdEditRoute
   '/events/$eventId/': typeof AppEventsEventIdIndexRoute
+  '/movies/$movieId/': typeof AppMoviesMovieIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -126,8 +140,10 @@ export interface FileRoutesByTo {
   '/bookings': typeof AppBookingsIndexRoute
   '/dashboard': typeof AppDashboardIndexRoute
   '/events': typeof AppEventsIndexRoute
+  '/movies': typeof AppMoviesIndexRoute
   '/events/$eventId/edit': typeof AppEventsEventIdEditRoute
   '/events/$eventId': typeof AppEventsEventIdIndexRoute
+  '/movies/$movieId': typeof AppMoviesMovieIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -144,8 +160,10 @@ export interface FileRoutesById {
   '/_app/bookings/': typeof AppBookingsIndexRoute
   '/_app/dashboard/': typeof AppDashboardIndexRoute
   '/_app/events/': typeof AppEventsIndexRoute
+  '/_app/movies/': typeof AppMoviesIndexRoute
   '/_app/events/$eventId/edit': typeof AppEventsEventIdEditRoute
   '/_app/events/$eventId/': typeof AppEventsEventIdIndexRoute
+  '/_app/movies/$movieId/': typeof AppMoviesMovieIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -161,8 +179,10 @@ export interface FileRouteTypes {
     | '/bookings/'
     | '/dashboard/'
     | '/events/'
+    | '/movies/'
     | '/events/$eventId/edit'
     | '/events/$eventId/'
+    | '/movies/$movieId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -176,8 +196,10 @@ export interface FileRouteTypes {
     | '/bookings'
     | '/dashboard'
     | '/events'
+    | '/movies'
     | '/events/$eventId/edit'
     | '/events/$eventId'
+    | '/movies/$movieId'
   id:
     | '__root__'
     | '/'
@@ -193,8 +215,10 @@ export interface FileRouteTypes {
     | '/_app/bookings/'
     | '/_app/dashboard/'
     | '/_app/events/'
+    | '/_app/movies/'
     | '/_app/events/$eventId/edit'
     | '/_app/events/$eventId/'
+    | '/_app/movies/$movieId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -263,6 +287,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSettingsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/movies/': {
+      id: '/_app/movies/'
+      path: '/movies'
+      fullPath: '/movies/'
+      preLoaderRoute: typeof AppMoviesIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/events/': {
       id: '/_app/events/'
       path: '/events'
@@ -298,6 +329,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppEventsCreateRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/movies/$movieId/': {
+      id: '/_app/movies/$movieId/'
+      path: '/movies/$movieId'
+      fullPath: '/movies/$movieId/'
+      preLoaderRoute: typeof AppMoviesMovieIdIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/events/$eventId/': {
       id: '/_app/events/$eventId/'
       path: '/events/$eventId'
@@ -322,8 +360,10 @@ interface AppRouteChildren {
   AppBookingsIndexRoute: typeof AppBookingsIndexRoute
   AppDashboardIndexRoute: typeof AppDashboardIndexRoute
   AppEventsIndexRoute: typeof AppEventsIndexRoute
+  AppMoviesIndexRoute: typeof AppMoviesIndexRoute
   AppEventsEventIdEditRoute: typeof AppEventsEventIdEditRoute
   AppEventsEventIdIndexRoute: typeof AppEventsEventIdIndexRoute
+  AppMoviesMovieIdIndexRoute: typeof AppMoviesMovieIdIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -333,8 +373,10 @@ const AppRouteChildren: AppRouteChildren = {
   AppBookingsIndexRoute: AppBookingsIndexRoute,
   AppDashboardIndexRoute: AppDashboardIndexRoute,
   AppEventsIndexRoute: AppEventsIndexRoute,
+  AppMoviesIndexRoute: AppMoviesIndexRoute,
   AppEventsEventIdEditRoute: AppEventsEventIdEditRoute,
   AppEventsEventIdIndexRoute: AppEventsEventIdIndexRoute,
+  AppMoviesMovieIdIndexRoute: AppMoviesMovieIdIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)

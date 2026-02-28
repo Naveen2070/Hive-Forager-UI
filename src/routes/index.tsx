@@ -5,6 +5,7 @@ import { FeaturedEvents } from '@/features/home/components/FeaturedEvents'
 import { ValueProps } from '@/features/home/components/ValueProps'
 import { OrganizerCTA } from '@/features/home/components/OrganizerCTA'
 import { LandingFooter } from '@/features/home/components/LandingFooter'
+import { FeaturedMovies } from '@/features/home/components/FeaturedMovies.tsx'
 
 export const Route = createFileRoute('/')({
   component: LandingPage,
@@ -17,6 +18,7 @@ function LandingPage() {
       <main className="flex-1">
         <HeroSection />
         <FeaturedEvents />
+        <FeaturedMovies />
         <ValueProps />
         <OrganizerCTA />
       </main>

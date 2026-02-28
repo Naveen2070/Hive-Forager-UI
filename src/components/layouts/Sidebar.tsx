@@ -1,6 +1,8 @@
 import { Link, useLocation, useNavigate } from '@tanstack/react-router'
 import {
   CalendarDays,
+  Film,
+  Hexagon,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -34,8 +36,10 @@ export const Sidebar = () => {
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
 
+  // Check if the user has organizer privileges
   const isOrganizer = user?.role === UserRole.ORGANIZER
 
+  // Updated Links Array with the new polyglot structure
   const links: Array<NavItem> = [
     {
       label: 'Dashboard',
@@ -50,7 +54,13 @@ export const Sidebar = () => {
       show: true,
     },
     {
-      label: 'My Tickets',
+      label: 'Movies',
+      href: '/movies',
+      icon: Film,
+      show: true,
+    },
+    {
+      label: 'My Bookings',
       href: '/bookings',
       icon: Ticket,
       show: !isOrganizer,
@@ -75,25 +85,28 @@ export const Sidebar = () => {
   }
 
   // Helper for navigation to ensure mobile menu closes
-  const handleNavigation = async(path: string) => {
+  const handleNavigation = async (path: string) => {
     if (open) setOpen(false)
     await navigate({ to: path })
   }
 
   const NavList = ({ mobile = false }: { mobile?: boolean }) => (
     <div className="flex flex-col h-full">
-      {/* Header */}
+      {/* Header - Rebranded */}
       <div
         className={cn(
-          'flex items-center px-6 border-b border-slate-800',
+          'flex items-center px-6 border-b border-slate-800 cursor-pointer hover:opacity-80 transition-opacity',
           mobile ? 'h-14' : 'h-16',
         )}
+        onClick={() => handleNavigation('/')}
       >
-        <div className="flex items-center gap-2 font-bold text-xl text-white">
+        <div className="flex items-center gap-2 font-bold text-xl">
           <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center">
-            <Ticket className="h-5 w-5 text-white" />
+            <Hexagon className="h-5 w-5 text-white fill-white/20" />
           </div>
-          <span>EventHub</span>
+          <span className="bg-clip-text text-transparent bg-linear-to-r from-slate-100 to-slate-400">
+            Hive Forager
+          </span>
         </div>
       </div>
 
@@ -133,7 +146,7 @@ export const Sidebar = () => {
         <div className="flex items-center gap-3 px-2">
           <div className="h-9 w-9 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700">
             <span className="font-semibold text-slate-300">
-              {user?.fullName.charAt(0).toUpperCase()}
+              {user?.fullName?.charAt(0).toUpperCase() || '?'}
             </span>
           </div>
           <div className="flex-1 overflow-hidden">
@@ -141,7 +154,7 @@ export const Sidebar = () => {
               {user?.fullName}
             </p>
             <p className="text-xs text-slate-500 truncate capitalize">
-              {user?.role.toLowerCase().replace('_', ' ')}
+              {user?.role?.toLowerCase().replace('_', ' ') || 'User'}
             </p>
           </div>
         </div>
@@ -177,11 +190,16 @@ export const Sidebar = () => {
 
       {/* MOBILE HEADER (Visible on Mobile) */}
       <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-slate-950 border-b border-slate-800 flex items-center justify-between px-4 z-50">
-        <div className="flex items-center gap-2 font-bold text-lg text-white">
+        <div
+          className="flex items-center gap-2 font-bold text-lg text-white cursor-pointer"
+          onClick={() => handleNavigation('/')}
+        >
           <div className="h-7 w-7 bg-blue-600 rounded-lg flex items-center justify-center">
-            <Ticket className="h-4 w-4 text-white" />
+            <Hexagon className="h-4 w-4 text-white fill-white/20" />
           </div>
-          <span>EventHub</span>
+          <span className="bg-clip-text text-transparent bg-linear-to-r from-slate-100 to-slate-400">
+            Hive Forager
+          </span>
         </div>
 
         <Sheet open={open} onOpenChange={setOpen}>

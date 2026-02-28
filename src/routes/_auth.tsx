@@ -36,7 +36,7 @@ function AuthLayout() {
             <Hexagon className="h-6 w-6 fill-blue-500 text-blue-500" />
           </div>
           <span className="bg-linear-to-br from-white to-slate-400 bg-clip-text text-transparent">
-            EventHive
+            Hive Forager
           </span>
         </motion.div>
 
@@ -47,15 +47,15 @@ function AuthLayout() {
           className="relative z-10 max-w-md space-y-4"
         >
           <p className="text-xl font-medium leading-relaxed text-slate-200">
-            “The most reliable platform we've used. It handles our massive
-            ticket spikes without even blinking.”
+            “Whether it's a massive tech conference or a blockbuster midnight
+            movie premiere, Hive Forager handles the ticketing rush flawlessly.”
           </p>
           <footer className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-slate-800 border border-white/10" />
             <div className="text-sm">
-              <div className="font-semibold text-white">Alex Chen</div>
+              <div className="font-semibold text-white">Elena Rodriguez</div>
               <div className="text-slate-400">
-                Lead Architect, TicketMastery
+                Operations Director, Global Entertainment
               </div>
             </div>
           </footer>
@@ -80,7 +80,7 @@ function AuthLayout() {
               <Hexagon className="h-7 w-7 fill-blue-500 text-blue-500" />
             </div>
             <h1 className="text-2xl font-bold tracking-tight text-white">
-              EventHive
+              Hive Forager
             </h1>
           </div>
 
