@@ -17,6 +17,8 @@ export interface ShowtimeSeatMapResponse {
   auditoriumName: string
   maxRows: number
   maxColumns: number
+  basePrice: number
+  tiers: SeatTierDTO[]
   seatMap: SeatStatusDTO[]
 }
 
