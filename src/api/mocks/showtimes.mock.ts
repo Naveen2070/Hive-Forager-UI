@@ -32,9 +32,49 @@ export const MOCK_SEAT_MAP: ShowtimeSeatMapResponse = {
   auditoriumName: 'IMAX Screen 1',
   maxRows: 10,
   maxColumns: 15,
-  seatMap: Array.from({ length: 150 }).map((_, i) => ({
-    row: Math.floor(i / 15),
-    col: i % 15,
-    status: Math.random() > 0.8 ? SeatStatus.SOLD : SeatStatus.AVAILABLE,
-  })),
+  basePrice: 15.5,
+  tiers: [
+    {
+      tierName: 'VIP Recliners',
+      priceSurcharge: 5.0,
+      seats: [
+        { row: 5, col: 4 },
+        { row: 5, col: 5 },
+        { row: 5, col: 6 },
+        { row: 5, col: 8 },
+        { row: 5, col: 9 },
+        { row: 5, col: 10 },
+      ],
+    },
+  ],
+  seatMap: (() => {
+    const seats = []
+
+    for (let r = 0; r < 10; r++) {
+      for (let c = 0; c < 15; c++) {
+        // 1. Tapered Front Row (Curved Screen effect)
+        // Remove 2 seats from both ends of the first row
+        if (r === 0 && (c < 2 || c > 12)) continue
+        // Remove 1 seat from both ends of the second row
+        if (r === 1 && (c === 0 || c === 14)) continue
+
+        // 2. Center Aisle
+        // Remove column 7 entirely to create a walking path down the middle
+        if (c === 7) continue
+
+        // 3. Wheelchair Cutouts or Structural Pillars
+        // Remove a couple of seats in row 5 for a "structural limitation"
+        if (r === 5 && (c === 2 || c === 12)) continue
+
+        // If it passes all the layout rules, add it to the map
+        seats.push({
+          row: r,
+          col: c,
+          status: Math.random() > 0.8 ? SeatStatus.SOLD : SeatStatus.AVAILABLE,
+        })
+      }
+    }
+
+    return seats
+  })(),
 }

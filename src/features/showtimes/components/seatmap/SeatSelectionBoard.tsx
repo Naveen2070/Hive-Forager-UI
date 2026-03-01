@@ -1,11 +1,16 @@
 import { Monitor } from 'lucide-react'
 import { SeatGrid } from './SeatGrid'
-import type { SeatCoordinateDTO, SeatStatusDTO } from '@/types/seating.types.ts'
+import type {
+  SeatCoordinateDTO,
+  SeatStatusDTO,
+  SeatTierDTO,
+} from '@/types/seating.types.ts'
 
 interface SeatSelectionBoardProps {
   maxRows: number
   maxColumns: number
   seatMap: SeatStatusDTO[]
+  tiers?: SeatTierDTO[]
   selectedSeats: SeatCoordinateDTO[]
   onToggleSeat: (row: number, col: number) => void
 }
@@ -14,16 +19,19 @@ export const SeatSelectionBoard = ({
   maxRows,
   maxColumns,
   seatMap,
+  tiers,
   selectedSeats,
   onToggleSeat,
 }: SeatSelectionBoardProps) => {
   return (
-    <div className="bg-slate-900/50 border border-slate-800 rounded-3xl p-6 md:p-10 flex flex-col items-center overflow-x-auto">
-      {/* The Screen Indicator */}
-      <div className="w-full max-w-2xl mb-12 flex flex-col items-center">
-        <div className="w-full h-2 bg-linear-to-r from-slate-800 via-slate-400 to-slate-800 rounded-[100%] shadow-[0_20px_50px_rgba(255,255,255,0.1)] opacity-70" />
-        <div className="mt-4 flex items-center text-slate-500 text-sm tracking-widest uppercase font-semibold">
-          <Monitor className="mr-2 h-4 w-4" /> Screen
+    <div className="bg-slate-900/40 border border-slate-800/80 rounded-3xl p-4 sm:p-6 md:p-8 flex flex-col items-center min-w-0 w-full">
+      {/* Sleek Curved Screen Indicator */}
+      <div className="w-full max-w-xl mb-8 sm:mb-12 flex flex-col items-center relative">
+        {/* A thinner, cleaner physical curve */}
+        <div className="w-full h-8 border-t-2 border-slate-700 rounded-t-[100%] opacity-60 shadow-[0_-5px_15px_rgba(255,255,255,0.03)]" />
+
+        <div className="absolute top-1 flex items-center text-slate-500 text-[10px] sm:text-xs tracking-[0.3em] uppercase font-bold">
+          <Monitor className="mr-2 h-3.5 w-3.5" /> Screen
         </div>
       </div>
 
@@ -32,23 +40,27 @@ export const SeatSelectionBoard = ({
         maxRows={maxRows}
         maxColumns={maxColumns}
         seatMap={seatMap}
+        tiers={tiers}
         selectedSeats={selectedSeats}
         onToggleSeat={onToggleSeat}
       />
 
-      {/* Legend */}
-      <div className="mt-12 flex items-center gap-6 text-sm text-slate-400">
+      {/* Clean Minimalist Legend */}
+      <div className="mt-4 sm:mt-8 flex flex-wrap justify-center gap-4 sm:gap-6 text-xs sm:text-sm text-slate-400 bg-slate-950/60 py-2.5 px-6 rounded-full border border-slate-800/50">
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded bg-slate-800 border border-slate-700" />{' '}
+          <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded bg-slate-800 border border-slate-950" />{' '}
           Available
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded bg-yellow-500 shadow-lg shadow-yellow-500/20" />{' '}
+          <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded bg-yellow-500 shadow-sm shadow-yellow-500/20" />{' '}
           Selected
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded bg-slate-950 border border-slate-800 opacity-50 cursor-not-allowed flex items-center justify-center">
-            <div className="w-1.5 h-1.5 rounded-full bg-slate-700" />
+          {/* Updated Taken Legend Item */}
+          <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded bg-slate-900 border border-slate-950 flex items-center justify-center">
+            <span className="text-slate-700 opacity-50 font-bold text-[6px] sm:text-[8px]">
+              X
+            </span>
           </div>
           Taken
         </div>
