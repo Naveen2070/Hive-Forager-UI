@@ -25,6 +25,7 @@ import { Route as AppOrganizerScanRouteImport } from './routes/_app.organizer.sc
 import { Route as AppEventsCreateRouteImport } from './routes/_app.events.create'
 import { Route as AppMoviesMovieIdIndexRouteImport } from './routes/_app.movies.$movieId.index'
 import { Route as AppEventsEventIdIndexRouteImport } from './routes/_app.events.$eventId.index'
+import { Route as AppCheckoutShowtimeIdIndexRouteImport } from './routes/_app.checkout.$showtimeId.index'
 import { Route as AppEventsEventIdEditRouteImport } from './routes/_app.events.$eventId.edit'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -105,6 +106,12 @@ const AppEventsEventIdIndexRoute = AppEventsEventIdIndexRouteImport.update({
   path: '/events/$eventId/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppCheckoutShowtimeIdIndexRoute =
+  AppCheckoutShowtimeIdIndexRouteImport.update({
+    id: '/checkout/$showtimeId/',
+    path: '/checkout/$showtimeId/',
+    getParentRoute: () => AppRoute,
+  } as any)
 const AppEventsEventIdEditRoute = AppEventsEventIdEditRouteImport.update({
   id: '/events/$eventId/edit',
   path: '/events/$eventId/edit',
@@ -125,6 +132,7 @@ export interface FileRoutesByFullPath {
   '/events/': typeof AppEventsIndexRoute
   '/movies/': typeof AppMoviesIndexRoute
   '/events/$eventId/edit': typeof AppEventsEventIdEditRoute
+  '/checkout/$showtimeId/': typeof AppCheckoutShowtimeIdIndexRoute
   '/events/$eventId/': typeof AppEventsEventIdIndexRoute
   '/movies/$movieId/': typeof AppMoviesMovieIdIndexRoute
 }
@@ -142,6 +150,7 @@ export interface FileRoutesByTo {
   '/events': typeof AppEventsIndexRoute
   '/movies': typeof AppMoviesIndexRoute
   '/events/$eventId/edit': typeof AppEventsEventIdEditRoute
+  '/checkout/$showtimeId': typeof AppCheckoutShowtimeIdIndexRoute
   '/events/$eventId': typeof AppEventsEventIdIndexRoute
   '/movies/$movieId': typeof AppMoviesMovieIdIndexRoute
 }
@@ -162,6 +171,7 @@ export interface FileRoutesById {
   '/_app/events/': typeof AppEventsIndexRoute
   '/_app/movies/': typeof AppMoviesIndexRoute
   '/_app/events/$eventId/edit': typeof AppEventsEventIdEditRoute
+  '/_app/checkout/$showtimeId/': typeof AppCheckoutShowtimeIdIndexRoute
   '/_app/events/$eventId/': typeof AppEventsEventIdIndexRoute
   '/_app/movies/$movieId/': typeof AppMoviesMovieIdIndexRoute
 }
@@ -181,6 +191,7 @@ export interface FileRouteTypes {
     | '/events/'
     | '/movies/'
     | '/events/$eventId/edit'
+    | '/checkout/$showtimeId/'
     | '/events/$eventId/'
     | '/movies/$movieId/'
   fileRoutesByTo: FileRoutesByTo
@@ -198,6 +209,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/movies'
     | '/events/$eventId/edit'
+    | '/checkout/$showtimeId'
     | '/events/$eventId'
     | '/movies/$movieId'
   id:
@@ -217,6 +229,7 @@ export interface FileRouteTypes {
     | '/_app/events/'
     | '/_app/movies/'
     | '/_app/events/$eventId/edit'
+    | '/_app/checkout/$showtimeId/'
     | '/_app/events/$eventId/'
     | '/_app/movies/$movieId/'
   fileRoutesById: FileRoutesById
@@ -343,6 +356,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppEventsEventIdIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/checkout/$showtimeId/': {
+      id: '/_app/checkout/$showtimeId/'
+      path: '/checkout/$showtimeId'
+      fullPath: '/checkout/$showtimeId/'
+      preLoaderRoute: typeof AppCheckoutShowtimeIdIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/events/$eventId/edit': {
       id: '/_app/events/$eventId/edit'
       path: '/events/$eventId/edit'
@@ -362,6 +382,7 @@ interface AppRouteChildren {
   AppEventsIndexRoute: typeof AppEventsIndexRoute
   AppMoviesIndexRoute: typeof AppMoviesIndexRoute
   AppEventsEventIdEditRoute: typeof AppEventsEventIdEditRoute
+  AppCheckoutShowtimeIdIndexRoute: typeof AppCheckoutShowtimeIdIndexRoute
   AppEventsEventIdIndexRoute: typeof AppEventsEventIdIndexRoute
   AppMoviesMovieIdIndexRoute: typeof AppMoviesMovieIdIndexRoute
 }
@@ -375,6 +396,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppEventsIndexRoute: AppEventsIndexRoute,
   AppMoviesIndexRoute: AppMoviesIndexRoute,
   AppEventsEventIdEditRoute: AppEventsEventIdEditRoute,
+  AppCheckoutShowtimeIdIndexRoute: AppCheckoutShowtimeIdIndexRoute,
   AppEventsEventIdIndexRoute: AppEventsEventIdIndexRoute,
   AppMoviesMovieIdIndexRoute: AppMoviesMovieIdIndexRoute,
 }

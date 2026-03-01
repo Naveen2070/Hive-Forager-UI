@@ -13,9 +13,8 @@ import { Link } from '@tanstack/react-router'
 
 const fetchFeaturedMovies = async () => {
   if (env.VITE_ENABLE_MOCK_AUTH === 'true') {
-    const { FEATURED_MOVIES_MOCK } =
-      await import('@/api/mocks/movies.mock')
-    return FEATURED_MOVIES_MOCK
+    const { MOVIES_MOCK } = await import('@/api/mocks/movies.mock')
+    return MOVIES_MOCK
   }
   // return moviesApi.getAll(0, 3)
   return []
