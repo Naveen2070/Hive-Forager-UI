@@ -1,4 +1,6 @@
-export const FEATURED_MOVIES_MOCK = [
+import type { MovieResponse } from '@/types/movie.type.ts'
+
+export const MOVIES_MOCK: MovieResponse[] = [
   {
     id: '123e4567-e89b-12d3-a456-426614174001',
     title: 'Inception: Remastered',
