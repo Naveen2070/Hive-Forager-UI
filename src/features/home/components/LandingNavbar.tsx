@@ -1,11 +1,10 @@
 import { Link } from '@tanstack/react-router'
-import { Hexagon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/store/auth.store'
 import { UserRole } from '@/types/enum.ts'
 
 export const LandingNavbar = () => {
-  const { isAuthenticated ,user} = useAuthStore()
+  const { isAuthenticated, user } = useAuthStore()
   const isOrganizer = user?.role === UserRole.ORGANIZER
 
   return (
@@ -15,9 +14,11 @@ export const LandingNavbar = () => {
           to="/"
           className="flex items-center gap-2 font-bold text-xl hover:opacity-80 transition-opacity"
         >
-          <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center">
-            <Hexagon className="h-5 w-5 text-white fill-white/20" />
-          </div>
+          <img
+            src="/hive-forager-ui-logo.png"
+            alt="Hive Forager Logo"
+            className="h-12 w-12 rounded-md object-cover border border-yellow-500/20 shadow-[0_0_10px_rgba(234,179,8,0.2)]"
+          />
           <span className="bg-clip-text text-transparent bg-linear-to-r from-slate-100 to-slate-400">
             Hive Forager
           </span>

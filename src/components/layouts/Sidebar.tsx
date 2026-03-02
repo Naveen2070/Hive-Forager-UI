@@ -1,8 +1,9 @@
+import type { LinkProps } from '@tanstack/react-router'
 import { Link, useLocation, useNavigate } from '@tanstack/react-router'
 import {
+  Building2,
   CalendarDays,
   Film,
-  Hexagon,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -11,9 +12,8 @@ import {
   Settings,
   Ticket,
 } from 'lucide-react'
-import { useState } from 'react'
-import type { LinkProps } from '@tanstack/react-router'
 import type { ElementType } from 'react'
+import { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/store/auth.store'
 import { UserRole } from '@/types/enum'
@@ -45,6 +45,12 @@ export const Sidebar = () => {
       label: 'Dashboard',
       href: '/dashboard',
       icon: LayoutDashboard,
+      show: isOrganizer,
+    },
+    {
+      label: 'Cinemas',
+      href: '/cinemas',
+      icon: Building2,
       show: isOrganizer,
     },
     {
@@ -101,9 +107,11 @@ export const Sidebar = () => {
         onClick={() => handleNavigation('/')}
       >
         <div className="flex items-center gap-2 font-bold text-xl">
-          <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center">
-            <Hexagon className="h-5 w-5 text-white fill-white/20" />
-          </div>
+          <img
+            src="/hive-forager-ui-logo.png"
+            alt="Hive Forager Logo"
+            className="h-12 w-12 rounded-md object-cover border border-yellow-500/20 shadow-[0_0_10px_rgba(234,179,8,0.2)]"
+          />
           <span className="bg-clip-text text-transparent bg-linear-to-r from-slate-100 to-slate-400">
             Hive Forager
           </span>
@@ -194,9 +202,11 @@ export const Sidebar = () => {
           className="flex items-center gap-2 font-bold text-lg text-white cursor-pointer"
           onClick={() => handleNavigation('/')}
         >
-          <div className="h-7 w-7 bg-blue-600 rounded-lg flex items-center justify-center">
-            <Hexagon className="h-4 w-4 text-white fill-white/20" />
-          </div>
+          <img
+            src="/hive-forager-ui-logo.png"
+            alt="Hive Forager Logo"
+            className="h-8 w-8 rounded-md object-cover border border-yellow-500/20 shadow-[0_0_10px_rgba(234,179,8,0.2)]"
+          />
           <span className="bg-clip-text text-transparent bg-linear-to-r from-slate-100 to-slate-400">
             Hive Forager
           </span>

@@ -15,5 +15,6 @@ export interface CinemaResponse {
   id: string
   name: string
   location: string
+  contactEmail: string
   approvalStatus: CinemaApprovalStatus | string
 }

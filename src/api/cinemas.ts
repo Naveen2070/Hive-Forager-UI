@@ -4,7 +4,7 @@ import type {
   UpdateCinemaRequest,
 } from '@/types/cinema.type'
 import { CinemaApprovalStatus } from '@/types/enum'
-import { api } from '@/api/axios.ts'
+import { api } from '@/api/axios'
 
 const isMock = import.meta.env.VITE_ENABLE_MOCK_AUTH === 'true'
 
@@ -17,6 +17,16 @@ export const cinemasApi = {
     const { data } = await api.get<CinemaResponse[]>('/cinemas')
     return data
   },
+
+  getMyCinemas: async (): Promise<CinemaResponse[]> => {
+    if (isMock) {
+      const { MOCK_CINEMAS } = await import('@/api/mocks/cinemas.mock')
+      return MOCK_CINEMAS
+    }
+    const { data } = await api.get<CinemaResponse[]>('/cinemas/my')
+    return data
+  },
+
   getCinemaById: async (id: string): Promise<CinemaResponse> => {
     if (isMock) {
       const { MOCK_CINEMAS } = await import('@/api/mocks/cinemas.mock')

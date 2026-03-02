@@ -20,6 +20,7 @@ import { Route as AppSettingsRouteImport } from './routes/_app.settings'
 import { Route as AppMoviesIndexRouteImport } from './routes/_app.movies.index'
 import { Route as AppEventsIndexRouteImport } from './routes/_app.events.index'
 import { Route as AppDashboardIndexRouteImport } from './routes/_app.dashboard.index'
+import { Route as AppCinemasIndexRouteImport } from './routes/_app.cinemas.index'
 import { Route as AppBookingsIndexRouteImport } from './routes/_app.bookings.index'
 import { Route as AppOrganizerScanRouteImport } from './routes/_app.organizer.scan'
 import { Route as AppEventsCreateRouteImport } from './routes/_app.events.create'
@@ -81,6 +82,11 @@ const AppDashboardIndexRoute = AppDashboardIndexRouteImport.update({
   path: '/dashboard/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppCinemasIndexRoute = AppCinemasIndexRouteImport.update({
+  id: '/cinemas/',
+  path: '/cinemas/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppBookingsIndexRoute = AppBookingsIndexRouteImport.update({
   id: '/bookings/',
   path: '/bookings/',
@@ -128,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/events/create': typeof AppEventsCreateRoute
   '/organizer/scan': typeof AppOrganizerScanRoute
   '/bookings/': typeof AppBookingsIndexRoute
+  '/cinemas/': typeof AppCinemasIndexRoute
   '/dashboard/': typeof AppDashboardIndexRoute
   '/events/': typeof AppEventsIndexRoute
   '/movies/': typeof AppMoviesIndexRoute
@@ -146,6 +153,7 @@ export interface FileRoutesByTo {
   '/events/create': typeof AppEventsCreateRoute
   '/organizer/scan': typeof AppOrganizerScanRoute
   '/bookings': typeof AppBookingsIndexRoute
+  '/cinemas': typeof AppCinemasIndexRoute
   '/dashboard': typeof AppDashboardIndexRoute
   '/events': typeof AppEventsIndexRoute
   '/movies': typeof AppMoviesIndexRoute
@@ -167,6 +175,7 @@ export interface FileRoutesById {
   '/_app/events/create': typeof AppEventsCreateRoute
   '/_app/organizer/scan': typeof AppOrganizerScanRoute
   '/_app/bookings/': typeof AppBookingsIndexRoute
+  '/_app/cinemas/': typeof AppCinemasIndexRoute
   '/_app/dashboard/': typeof AppDashboardIndexRoute
   '/_app/events/': typeof AppEventsIndexRoute
   '/_app/movies/': typeof AppMoviesIndexRoute
@@ -187,6 +196,7 @@ export interface FileRouteTypes {
     | '/events/create'
     | '/organizer/scan'
     | '/bookings/'
+    | '/cinemas/'
     | '/dashboard/'
     | '/events/'
     | '/movies/'
@@ -205,6 +215,7 @@ export interface FileRouteTypes {
     | '/events/create'
     | '/organizer/scan'
     | '/bookings'
+    | '/cinemas'
     | '/dashboard'
     | '/events'
     | '/movies'
@@ -225,6 +236,7 @@ export interface FileRouteTypes {
     | '/_app/events/create'
     | '/_app/organizer/scan'
     | '/_app/bookings/'
+    | '/_app/cinemas/'
     | '/_app/dashboard/'
     | '/_app/events/'
     | '/_app/movies/'
@@ -321,6 +333,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDashboardIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/cinemas/': {
+      id: '/_app/cinemas/'
+      path: '/cinemas'
+      fullPath: '/cinemas/'
+      preLoaderRoute: typeof AppCinemasIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/bookings/': {
       id: '/_app/bookings/'
       path: '/bookings'
@@ -378,6 +397,7 @@ interface AppRouteChildren {
   AppEventsCreateRoute: typeof AppEventsCreateRoute
   AppOrganizerScanRoute: typeof AppOrganizerScanRoute
   AppBookingsIndexRoute: typeof AppBookingsIndexRoute
+  AppCinemasIndexRoute: typeof AppCinemasIndexRoute
   AppDashboardIndexRoute: typeof AppDashboardIndexRoute
   AppEventsIndexRoute: typeof AppEventsIndexRoute
   AppMoviesIndexRoute: typeof AppMoviesIndexRoute
@@ -392,6 +412,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppEventsCreateRoute: AppEventsCreateRoute,
   AppOrganizerScanRoute: AppOrganizerScanRoute,
   AppBookingsIndexRoute: AppBookingsIndexRoute,
+  AppCinemasIndexRoute: AppCinemasIndexRoute,
   AppDashboardIndexRoute: AppDashboardIndexRoute,
   AppEventsIndexRoute: AppEventsIndexRoute,
   AppMoviesIndexRoute: AppMoviesIndexRoute,
