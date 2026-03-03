@@ -2,8 +2,19 @@ import { useMovies } from '@/features/movies/hooks/useMovies'
 import { MovieGrid } from './MovieGrid'
 import { DataFallback } from '@/components/shared/DataFallback'
 import { Skeleton } from '@/components/ui/skeleton'
+import type { MovieResponse } from '@/types/movie.type'
 
-export const MovieCatalog = () => {
+interface MovieCatalogProps {
+  isOrganizer?: boolean
+  onEdit?: (movie: MovieResponse) => void
+  onDelete?: (id: string, title: string) => void
+}
+
+export const MovieCatalog = ({
+  isOrganizer,
+  onEdit,
+  onDelete,
+}: MovieCatalogProps) => {
   const { data: movies, isLoading, isError, refetch } = useMovies()
 
   if (isLoading) {
@@ -30,5 +41,12 @@ export const MovieCatalog = () => {
     )
   }
 
-  return <MovieGrid movies={movies || []} />
+  return (
+    <MovieGrid
+      movies={movies || []}
+      isOrganizer={isOrganizer}
+      onEdit={onEdit}
+      onDelete={onDelete}
+    />
+  )
 }

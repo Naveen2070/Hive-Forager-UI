@@ -2,7 +2,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { showtimesApi } from '@/api/showtimes'
 import { showtimeKeys } from '../showtimes.keys'
-import type { CreateShowtimeRequest } from '@/types/showtime.type'
+import type {
+  CreateShowtimeRequest,
+  UpdateShowtimeRequest,
+} from '@/types/showtime.type'
 
 export const useShowtimesByMovie = (movieId: string) => {
   return useQuery({
@@ -37,6 +40,40 @@ export const useCreateShowtime = () => {
       toast.error(
         error.response?.data?.message || 'Failed to schedule showtime.',
       )
+    },
+  })
+}
+
+export const useUpdateShowtime = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: UpdateShowtimeRequest }) =>
+      showtimesApi.updateShowtime(id, data),
+    onSuccess: async (_, variables) => {
+      toast.success('Showtime updated successfully!')
+      await queryClient.invalidateQueries({ queryKey: showtimeKeys.lists() })
+      await queryClient.invalidateQueries({
+        queryKey: showtimeKeys.seatMap(variables.id),
+      })
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Failed to update showtime.')
+    },
+  })
+}
+
+export const useDeleteShowtime = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => showtimesApi.deleteShowtime(id),
+    onSuccess: async () => {
+      toast.success('Showtime removed.')
+      await queryClient.invalidateQueries({ queryKey: showtimeKeys.lists() })
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Failed to remove showtime.')
     },
   })
 }

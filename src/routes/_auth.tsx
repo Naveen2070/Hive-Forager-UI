@@ -32,9 +32,11 @@ function AuthLayout() {
           className="relative z-10 flex items-center gap-3 text-xl font-semibold tracking-tight"
         >
           {/* Logo Icon */}
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 border border-blue-500/20">
-            <Hexagon className="h-6 w-6 fill-blue-500 text-blue-500" />
-          </div>
+          <img
+            src="/hive-forager-ui-logo.png"
+            alt="Hive Forager Logo"
+            className="h-10 w-10  rounded-md object-fill"
+          />
           <span className="bg-linear-to-br from-white to-slate-400 bg-clip-text text-transparent">
             Hive Forager
           </span>

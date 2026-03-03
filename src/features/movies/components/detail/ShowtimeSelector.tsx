@@ -1,17 +1,25 @@
 import { useMemo } from 'react'
 import { Link } from '@tanstack/react-router'
-import { MapPin, Ticket } from 'lucide-react'
+import { Edit, Info, MapPin, Ticket, Trash2 } from 'lucide-react'
 import { useAuditoriums } from '@/features/auditoriums/hooks/useAuditoriums'
 import { useCinemas } from '@/features/cinemas/hooks/useCinemas'
 import { DataFallback } from '@/components/shared/DataFallback'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useShowtimesByMovie } from '@/features/showtimes/hooks/useShowTimes.ts'
+import { useShowtimesByMovie } from '@/features/showtimes/hooks/useShowTimes'
 
 interface ShowtimeSelectorProps {
   movieId: string
+  isOrganizer?: boolean
+  onEdit?: (showtime: any) => void
+  onDelete?: (id: string) => void
 }
 
-export const ShowtimeSelector = ({ movieId }: ShowtimeSelectorProps) => {
+export const ShowtimeSelector = ({
+  movieId,
+  isOrganizer,
+  onEdit,
+  onDelete,
+}: ShowtimeSelectorProps) => {
   const {
     data: showtimes,
     isLoading: loadingTimes,
@@ -52,19 +60,31 @@ export const ShowtimeSelector = ({ movieId }: ShowtimeSelectorProps) => {
         }
       }
 
-      // Format time (e.g., 7:30 PM)
       const timeString = new Date(show.startTimeUtc).toLocaleTimeString(
         'en-US',
         {
           hour: 'numeric',
           minute: '2-digit',
+          timeZone: 'UTC',
+          timeZoneName: 'short',
         },
       )
 
       grouped[cinema.id].auditoriums[aud.id].times.push({
-        id: show.id,
-        time: timeString,
-        basePrice: show.basePrice,
+        ...show,
+        cinemaId: cinema.id,
+        formattedTime: timeString,
+      })
+    })
+
+    // Sort times sequentially within each auditorium
+    Object.values(grouped).forEach((cinema: any) => {
+      Object.values(cinema.auditoriums).forEach((aud: any) => {
+        aud.times.sort(
+          (a: any, b: any) =>
+            new Date(a.startTimeUtc).getTime() -
+            new Date(b.startTimeUtc).getTime(),
+        )
       })
     })
 
@@ -113,11 +133,17 @@ export const ShowtimeSelector = ({ movieId }: ShowtimeSelectorProps) => {
         >
           {/* Cinema Header */}
           <div className="mb-6 border-b border-slate-800/50 pb-4">
-            <h3 className="text-xl font-bold text-slate-100 flex items-center">
-              <MapPin className="mr-2 h-5 w-5 text-yellow-500" />
-              {cinemaGroup.cinemaName}
-            </h3>
-            <p className="text-sm text-slate-400 ml-7 mt-1">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+              <h3 className="text-xl font-bold text-slate-100 flex items-center">
+                <MapPin className="mr-2 h-5 w-5 text-yellow-500" />
+                {cinemaGroup.cinemaName}
+              </h3>
+              <span className="flex items-center text-xs font-medium text-slate-400 bg-slate-800/50 px-2 py-1 rounded-md ml-7 sm:ml-0 w-fit">
+                <Info className="h-3 w-3 mr-1.5 text-blue-400" />
+                Venue Local Time
+              </span>
+            </div>
+            <p className="text-sm text-slate-400 ml-7 mt-2 sm:mt-1">
               {cinemaGroup.location}
             </p>
           </div>
@@ -131,21 +157,47 @@ export const ShowtimeSelector = ({ movieId }: ShowtimeSelectorProps) => {
                     {audGroup.auditoriumName}
                   </h4>
 
-                  <div className="flex flex-wrap gap-3">
+                  <div className="flex flex-wrap gap-4 mt-2">
                     {audGroup.times.map((timeObj: any) => (
-                      <Link
-                        key={timeObj.id}
-                        to="/checkout/$showtimeId"
-                        params={{ showtimeId: timeObj.id }}
-                        className="group flex flex-col items-center justify-center bg-slate-950 border border-slate-700 rounded-xl px-5 py-2.5 hover:border-yellow-500 hover:bg-yellow-500/10 transition-all cursor-pointer shadow-sm hover:shadow-yellow-500/20"
-                      >
-                        <span className="text-sm font-medium text-slate-200 group-hover:text-yellow-400">
-                          {timeObj.time}
-                        </span>
-                        <span className="text-[10px] text-slate-500 group-hover:text-yellow-500/70">
-                          ${timeObj.basePrice.toFixed(2)}
-                        </span>
-                      </Link>
+                      <div key={timeObj.id} className="relative group">
+                        {/* The Clickable Button for Attendees */}
+                        <Link
+                          to="/checkout/$showtimeId"
+                          params={{ showtimeId: timeObj.id }}
+                          className="flex flex-col items-center justify-center bg-slate-950 border border-slate-700 rounded-xl px-6 py-3 hover:border-yellow-500 hover:bg-yellow-500/10 transition-all cursor-pointer shadow-sm hover:shadow-yellow-500/20"
+                        >
+                          <span className="text-sm font-medium text-slate-200 group-hover:text-yellow-400">
+                            {timeObj.formattedTime}
+                          </span>
+                          <span className="text-[10px] text-slate-500 group-hover:text-yellow-500/70">
+                            ${timeObj.basePrice.toFixed(2)}
+                          </span>
+                        </Link>
+
+                        {/* Organizer Action Overlay (Floating Edit/Delete) */}
+                        {isOrganizer && (
+                          <div className="absolute -top-2 -right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault()
+                                onEdit?.(timeObj)
+                              }}
+                              className="bg-slate-800 p-1.5 rounded-full border border-slate-700 text-slate-400 hover:text-blue-400 hover:bg-slate-700 shadow-lg transition-colors"
+                            >
+                              <Edit className="h-3 w-3" />
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault()
+                                onDelete?.(timeObj.id)
+                              }}
+                              className="bg-slate-800 p-1.5 rounded-full border border-slate-700 text-slate-400 hover:text-red-400 hover:bg-slate-700 shadow-lg transition-colors"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     ))}
                   </div>
                 </div>

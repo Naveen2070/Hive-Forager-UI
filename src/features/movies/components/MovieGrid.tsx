@@ -5,9 +5,17 @@ import { MovieCard } from './MovieCard'
 
 interface MovieGridProps {
   movies: MovieResponse[]
+  isOrganizer?: boolean
+  onEdit?: (movie: MovieResponse) => void
+  onDelete?: (id: string, title: string) => void
 }
 
-export const MovieGrid = ({ movies }: MovieGridProps) => {
+export const MovieGrid = ({
+  movies,
+  isOrganizer,
+  onEdit,
+  onDelete,
+}: MovieGridProps) => {
   if (!movies || movies.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center bg-slate-900/20 rounded-2xl border border-dashed border-slate-800">
@@ -15,10 +23,7 @@ export const MovieGrid = ({ movies }: MovieGridProps) => {
         <h3 className="text-xl font-semibold text-slate-300">
           No movies found
         </h3>
-        <p className="text-slate-500 max-w-sm mt-2">
-          It looks like there aren't any movies scheduled right now. Check back
-          later!
-        </p>
+        <p className="text-slate-500 max-w-sm mt-2">Check back later!</p>
       </div>
     )
   }
@@ -32,7 +37,13 @@ export const MovieGrid = ({ movies }: MovieGridProps) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: index * 0.05 }}
         >
-          <MovieCard movie={movie} />
+          {/* Pass the actions down to the card */}
+          <MovieCard
+            movie={movie}
+            isOrganizer={isOrganizer}
+            onEdit={onEdit}
+            onDelete={onDelete}
+          />
         </motion.div>
       ))}
     </div>

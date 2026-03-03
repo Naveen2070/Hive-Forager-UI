@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { moviesApi } from '@/api/movies'
 import { movieKeys } from '../movies.keys'
-import type { CreateMovieRequest } from '@/types/movie.type'
+import type { CreateMovieRequest, UpdateMovieRequest } from '@/types/movie.type'
 
 export const fetchMovies = async () => {
   return moviesApi.getAllMovies()
@@ -38,6 +38,40 @@ export const useCreateMovie = () => {
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message || 'Failed to create movie.')
+    },
+  })
+}
+
+export const useUpdateMovie = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: UpdateMovieRequest }) =>
+      moviesApi.updateMovie(id, data),
+    onSuccess: async (_, variables) => {
+      toast.success('Movie updated successfully!')
+      await queryClient.invalidateQueries({ queryKey: movieKeys.lists() })
+      await queryClient.invalidateQueries({
+        queryKey: movieKeys.detail(variables.id),
+      })
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Failed to update movie.')
+    },
+  })
+}
+
+export const useDeleteMovie = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => moviesApi.deleteMovie(id),
+    onSuccess: async () => {
+      toast.success('Movie deleted.')
+      await queryClient.invalidateQueries({ queryKey: movieKeys.lists() })
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Failed to delete movie.')
     },
   })
 }
