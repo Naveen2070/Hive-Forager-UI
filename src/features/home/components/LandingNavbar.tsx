@@ -17,7 +17,7 @@ export const LandingNavbar = () => {
           <img
             src="/hive-forager-ui-logo.png"
             alt="Hive Forager Logo"
-            className="h-12 w-12 rounded-md object-cover border border-yellow-500/20 shadow-[0_0_10px_rgba(234,179,8,0.2)]"
+            className="h-10 w-10  rounded-md object-fill"
           />
           <span className="bg-clip-text text-transparent bg-linear-to-r from-slate-100 to-slate-400">
             Hive Forager
