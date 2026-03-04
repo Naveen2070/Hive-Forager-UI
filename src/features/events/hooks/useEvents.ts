@@ -5,52 +5,18 @@ import {
   useQueryClient,
 } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
-import { eventsApi } from '@/api/events.ts'
-import { eventKeys } from '@/features/events/events.keys.ts'
 import { toast } from 'sonner'
-import { useAuthStore } from '@/store/auth.store.ts'
-import { UserRole } from '@/types/enum.ts'
 import { useState } from 'react'
 import type { EventFilters } from '@/types/event.type.ts'
-import { useDebounce } from '@/hooks/useDebounce.ts'
 import type { CreateEventValues } from '@/features/events/event.schemas.ts'
+import { eventsApi } from '@/api/events.ts'
+import { eventKeys } from '@/features/events/events.keys.ts'
+import { useAuthStore } from '@/store/auth.store.ts'
+import { UserRole } from '@/types/enum.ts'
+import { useDebounce } from '@/hooks/useDebounce.ts'
 
-export const useCreateEvent = () => {
-  const queryClient = useQueryClient()
-  const navigate = useNavigate()
+// --- GET ---
 
-  return useMutation({
-    mutationFn: eventsApi.create,
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: eventKeys.lists() })
-      toast.success('Event created successfully')
-      await navigate({ to: '/events' })
-    },
-    onError: (error) => {
-      console.error({
-        feature: 'useCreateEvent',
-        error: error,
-      })
-      toast.error('Failed to create event. Please try again.')
-    },
-  })
-}
-export const useDeleteEvent = () => {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: eventsApi.delete,
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: eventKeys.lists() })
-
-      toast.success('Event deleted successfully')
-    },
-    onError: (e) => {
-      console.error('Error while deleting event', e)
-      toast.error('Error while deleting event')
-    },
-  })
-}
 export const useEventDetail = (eventId: number) => {
   const query = useQuery({
     queryKey: eventKeys.detail(eventId),
@@ -65,6 +31,7 @@ export const useEventDetail = (eventId: number) => {
     refetch: query.refetch,
   }
 }
+
 export const useEventQueries = () => {
   // Get user role
   const { user } = useAuthStore()
@@ -121,6 +88,32 @@ export const useEventQueries = () => {
     myEvents,
   }
 }
+
+// --- POST ---
+
+export const useCreateEvent = () => {
+  const queryClient = useQueryClient()
+  const navigate = useNavigate()
+
+  return useMutation({
+    mutationFn: eventsApi.create,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: eventKeys.lists() })
+      toast.success('Event created successfully')
+      await navigate({ to: '/events' })
+    },
+    onError: (error) => {
+      console.error({
+        feature: 'useCreateEvent',
+        error: error,
+      })
+      toast.error('Failed to create event. Please try again.')
+    },
+  })
+}
+
+// --- PUT ---
+
 export const useUpdateEvent = (eventId: number) => {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
@@ -164,13 +157,14 @@ export const useUpdateEvent = (eventId: number) => {
     },
   })
 }
+
 export const useUpdateEventStatus = (eventId: number) => {
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: (status: string) => eventsApi.updateStatus(eventId, status),
     onSuccess: async (newData) => {
-      queryClient.setQueryData(eventKeys.detail(eventId), newData)
+      await queryClient.setQueryData(eventKeys.detail(eventId), newData)
 
       await queryClient.invalidateQueries({ queryKey: eventKeys.lists() })
 
@@ -181,6 +175,25 @@ export const useUpdateEventStatus = (eventId: number) => {
     onError: (e) => {
       console.error('Error while updating event status', e)
       toast.error('Error while updating event status')
+    },
+  })
+}
+
+// --- DELETE ---
+
+export const useDeleteEvent = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: eventsApi.delete,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: eventKeys.lists() })
+
+      toast.success('Event deleted successfully')
+    },
+    onError: (e) => {
+      console.error('Error while deleting event', e)
+      toast.error('Error while deleting event')
     },
   })
 }
