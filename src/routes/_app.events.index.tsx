@@ -6,7 +6,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { EventHeader } from '@/features/events/components/EventHeader'
 import { EventFiltersBar } from '@/features/events/components/EventFiltersBar'
 import { EventGrid } from '@/features/events/components/EventGrid'
-import { useEventQueries } from '@/features/events/hooks/useEventQueries'
 
 // API & Store & Fallbacks
 import { eventsApi } from '@/api/events'
@@ -15,6 +14,7 @@ import { UserRole } from '@/types/enum'
 import { eventKeys } from '@/features/events/events.keys.ts'
 import { PaginationBar } from '@/components/shared/pagination-bar.tsx'
 import { DataFallback } from '@/components/shared/DataFallback'
+import { useEventQueries } from '@/features/events/hooks/useEvents.ts'
 
 export const Route = createFileRoute('/_app/events/')({
   component: EventsPage,

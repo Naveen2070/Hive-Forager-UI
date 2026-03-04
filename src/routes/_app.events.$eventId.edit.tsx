@@ -6,10 +6,10 @@ import type { CreateEventValues } from '@/features/events/event.schemas'
 import { eventsApi } from '@/api/events'
 import { eventKeys } from '@/features/events/events.keys'
 import { CreateEventForm } from '@/features/events/components/CreateEventForm'
-import { useUpdateEvent } from '@/features/events/hooks/useUpdateEvent'
 import { EventStatusCard } from '@/features/events/components/EventStatusCard'
 import { TicketTierManager } from '@/features/events/components/ticket-tier/TicketTierManager.tsx'
-import { DataFallback } from '@/components/shared/DataFallback' // 👉 New Fallback
+import { DataFallback } from '@/components/shared/DataFallback'
+import { useUpdateEvent } from '@/features/events/hooks/useEvents.ts' // 👉 New Fallback
 
 // Shared fetcher so both loader and hooks can use it
 const fetchEventDetail = async (id: number) => {
