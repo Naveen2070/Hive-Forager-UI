@@ -17,6 +17,9 @@ export interface TicketCheckoutResponse {
 export interface MyTicketResponse {
   ticketId: string
   bookingReference: string
+  movieId: string
+  cinemaId: string
+  showtimeId: string
   movieTitle: string
   cinemaName: string
   auditoriumName: string

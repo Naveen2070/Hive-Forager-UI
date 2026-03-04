@@ -15,7 +15,7 @@ export const LandingNavbar = () => {
           className="flex items-center gap-2 font-bold text-xl hover:opacity-80 transition-opacity"
         >
           <img
-            src="/hive-forager-ui-logo.png"
+            src="/hive-forager-ui-logo_v2.png"
             alt="Hive Forager Logo"
             className="h-10 w-10  rounded-md object-fill"
           />
