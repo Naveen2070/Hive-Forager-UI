@@ -9,10 +9,10 @@ export interface RevenueTrendItem {
 }
 
 export interface RecentSale {
-  id: number
+  id: string
   eventName: string
   customerName: string
-  tierName:string
+  tierName: string
   tickets: number
   amount: number
   date: string
