@@ -1,15 +1,11 @@
 import { BookingStatus } from '@/types/enum.ts'
 import type { BookingDTO } from '@/types/booking.type.ts'
+import type { PageResponse } from '@/types/common.type.ts'
 
-export const MY_BOOKINGS_MOCK: {
-  content: BookingDTO[]
-  totalPages: number
-  totalElements: number
-} = {
+export const MY_BOOKINGS_MOCK = {
   totalPages: 1,
   totalElements: 4,
   content: [
-    // 1. Next Up (Upcoming Event - Maps to Event ID 1)
     {
       bookingId: 1001,
       bookingReference: 'HIVE-A7B8C9',
@@ -76,4 +72,10 @@ export const MY_BOOKINGS_MOCK: {
       bookedAt: '2026-02-10T11:20:00Z',
     },
   ],
-}
+  pageable: {
+    pageNumber: 0,
+    pageSize: 0,
+  },
+  last: false,
+  first: false,
+} satisfies PageResponse<BookingDTO>

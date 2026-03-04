@@ -1,9 +1,30 @@
-# Hive Forager - UI 🐝
+<p style="text-align: center;">
+  <img src="public/hive-forager-ui-logo_v2.png" alt="Hive Forager Logo" width="150"/>
+</p>
 
-> A modern, type-safe, and high-performance React frontend for the **Hive Ecosystem**, built with **Vite 7**, **TanStack Router**, and **React 19**.
+<h1 style="text-align: center;">Hive Forager 🐝</h1>
 
-**Hive Forager** is the unified "Super App" portal for consumers and organizers. It provides a seamless experience for browsing global events, reserving cinema seats via an interactive CSS grid, and managing digital wallets.
+<p style="text-align: center;"><em>A Modern, Type-Safe Super App for the Hive Ecosystem.</em></p>
 
+<p style="text-align: center;">
+  <img src="https://img.shields.io/badge/Frontend-React_19-61DAFB" alt="React 19"/>
+  <img src="https://img.shields.io/badge/Build-Vite_7-646CFF" alt="Vite 7"/>
+  <img src="https://img.shields.io/badge/Routing-TanStack_Router-FF4154" alt="TanStack Router"/>
+  <img src="https://img.shields.io/badge/State-TanStack_Query_+_Zustand-FFB020" alt="State Management"/>
+</p>
+
+<p style="text-align: center;">
+  <img src="https://img.shields.io/badge/UI-Shadcn_UI_+_TailwindCSS_v4-000000" alt="UI"/>
+  <img src="https://img.shields.io/badge/Animation-Framer_Motion-EF008F" alt="Framer Motion"/>
+  <img src="https://img.shields.io/badge/Forms-React_Hook_Form_+_Zod-EC5990" alt="Forms"/>
+  <img src="https://img.shields.io/badge/Status-Actively_Evolving-blueviolet" alt="Status"/>
+</p>
+
+---
+
+> **Hive Forager** is the unified consumer and organizer portal for the Hive Ecosystem.  
+> It delivers a seamless experience for browsing global events, booking cinema tickets with an interactive CSS Grid seat
+> engine, and managing digital wallets — all powered by a polyglot microservice's backend.
 ---
 
 ### 🔗 The Ecosystem Hub

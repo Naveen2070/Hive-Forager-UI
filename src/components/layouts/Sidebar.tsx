@@ -108,7 +108,7 @@ export const Sidebar = () => {
       >
         <div className="flex items-center gap-2 font-bold text-xl">
           <img
-            src="/hive-forager-ui-logo.png"
+            src="/hive-forager-ui-logo_v2.png"
             alt="Hive Forager Logo"
             className="h-10 w-10  rounded-md object-fill"
           />
@@ -203,7 +203,7 @@ export const Sidebar = () => {
           onClick={() => handleNavigation('/')}
         >
           <img
-            src="/hive-forager-ui-logo.png"
+            src="/hive-forager-ui-logo_v2.png"
             alt="Hive Forager Logo"
             className="h-10 w-10  rounded-md object-fill"
           />
