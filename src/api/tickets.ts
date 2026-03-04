@@ -23,6 +23,35 @@ export const ticketsApi = {
     )
     return data
   },
+
+  checkIn: async (reference: string) => {
+    if (isMock) {
+      // Simulate network delay
+      await new Promise((resolve) => setTimeout(resolve, 800))
+
+      // Simulate a successful scan for our mock Spider-Man ticket
+      if (reference === 'HIVE-A9B8C7') {
+        return {
+          status: 'ALREADY_CHECKED_IN',
+          message: 'This ticket has already been scanned.',
+          attendeeName: 'Guest',
+        }
+      }
+
+      // Default mock success
+      return {
+        status: 'CHECKED_IN',
+        message: 'Ticket verified successfully.',
+        attendeeName: 'Guest',
+        ticketTierName: 'VIP Seats (Row F)',
+      }
+    }
+    const { data } = await api.post('/tickets/check-in', {
+      bookingReference: reference,
+    })
+    return data
+  },
+
   getMyTickets: async (): Promise<MyTicketResponse[]> => {
     if (isMock) {
       const { MOCK_MY_TICKETS } = await import('@/api/mocks/tickets.mock')

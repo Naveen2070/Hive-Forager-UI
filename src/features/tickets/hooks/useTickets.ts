@@ -38,3 +38,17 @@ export const useReserveTickets = () => {
     },
   })
 }
+
+export const useCheckInTicket = () => {
+  return useMutation({
+    mutationFn: async (reference: string) => {
+      return await ticketsApi.checkIn(reference)
+    },
+    onSuccess: async () => {
+      toast.success('Ticket checked in successfully.')
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Failed to check in ticket.')
+    },
+  })
+}
