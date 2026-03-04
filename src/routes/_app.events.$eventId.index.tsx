@@ -9,9 +9,9 @@ import { Separator } from '@/components/ui/separator'
 import { EventHero } from '@/features/events/components/detail/EventHero'
 import { EventDescription } from '@/features/events/components/detail/EventDescription'
 import { EventDetailSkeleton } from '@/features/events/components/detail/EventDetailSkeleton'
-import { useEventDetail } from '@/features/events/hooks/UseEventDetail.ts'
 import { BookingCard } from '@/features/bookings/components/BookingCard.tsx'
 import { DataFallback } from '@/components/shared/DataFallback'
+import { useEventDetail } from '@/features/events/hooks/useEvents.ts'
 
 // Shared fetcher so both loader and hooks can use it if needed
 const fetchEventDetail = async (id: number) => {
