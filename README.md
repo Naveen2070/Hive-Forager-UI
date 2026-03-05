@@ -1,12 +1,12 @@
-<p style="text-align: center;">
+<p align="center">
   <img src="public/hive-forager-ui-logo_v2.png" alt="Hive Forager Logo" width="160"/>
 </p>
 
-<h1 style="text-align: center;">Hive Forager 🐝</h1>
+<h1 align="center">Hive Forager 🐝</h1>
 
-<p style="text-align: center;"><strong>The Unified Pulse of the Hive Ecosystem.</strong></p>
+<p align="center"><strong>The Unified Pulse of the Hive Ecosystem.</strong></p>
 
-<p style="text-align: center;">
+<p align="center">
   <img src="https://img.shields.io/badge/Frontend-React_19-61DAFB?style=for-the-badge&logo=react" alt="React 19"/>
   <img src="https://img.shields.io/badge/Language-TypeScript-3178C6?style=for-the-badge&logo=typescript" alt="TypeScript"/>
   <img src="https://img.shields.io/badge/Build-Vite_7-646CFF?style=for-the-badge&logo=vite" alt="Vite 7"/>
@@ -15,7 +15,7 @@
   <img src="https://img.shields.io/badge/State-Zustand-443E38?style=for-the-badge" alt="Zustand"/>
 </p>
 
-<p style="text-align: center;">
+<p align="center">
   <img src="https://img.shields.io/badge/UI-Shadcn_UI-000000?style=for-the-badge&logo=shadcnui" alt="Shadcn UI"/>
   <img src="https://img.shields.io/badge/CSS-Tailwind_4-06B6D4?style=for-the-badge&logo=tailwindcss" alt="Tailwind CSS"/>
   <img src="https://img.shields.io/badge/Animation-Framer_Motion-6112EE?style=for-the-badge&logo=framer" alt="Framer Motion"/>
