@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Loader2, Power } from 'lucide-react'
-import { useUpdateEventStatus } from '@/features/events/hooks/useUpdateEventStatus.ts'
 import { EventStatus } from '@/types/enum'
 
 import {
@@ -19,6 +18,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
+import { useUpdateEventStatus } from '@/features/events/hooks/useEvents.ts'
 
 interface EventStatusCardProps {
   eventId: number

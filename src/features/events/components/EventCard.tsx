@@ -12,7 +12,6 @@ import {
 } from '@/components/ui/card.tsx'
 import { Badge } from '@/components/ui/badge.tsx'
 import { Button } from '@/components/ui/button.tsx'
-import { useDeleteEvent } from '@/features/events/hooks/useDeleteEvent.ts'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,6 +23,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog.tsx'
+import { useDeleteEvent } from '@/features/events/hooks/useEvents.ts'
 
 interface EventCardProps {
   event: EventDTO
