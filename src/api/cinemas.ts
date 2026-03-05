@@ -5,26 +5,75 @@ import type {
 } from '@/types/cinema.type'
 import { CinemaApprovalStatus } from '@/types/enum'
 import { api } from '@/api/axios'
+import type { PageResponse } from '@/types/common.type.ts'
+import {
+  type DotNetPagedResponse,
+  mapToPageResponse,
+} from '@/lib/pagination-mapper.ts'
 
 const isMock = import.meta.env.VITE_ENABLE_MOCK_AUTH === 'true'
 
 export const cinemasApi = {
-  getAllCinemas: async (): Promise<CinemaResponse[]> => {
+  getAllCinemas: async (
+    page: number = 0,
+    size: number = 10,
+    search?: string,
+  ): Promise<PageResponse<CinemaResponse>> => {
     if (isMock) {
       const { MOCK_CINEMAS } = await import('@/api/mocks/cinemas.mock')
-      return MOCK_CINEMAS
+
+      let filtered = MOCK_CINEMAS
+      if (search) {
+        const lower = search.toLowerCase()
+        filtered = filtered.filter(
+          (c) =>
+            c.name.toLowerCase().includes(lower) ||
+            c.location.toLowerCase().includes(lower),
+        )
+      }
+
+      const totalElements = filtered.length
+      const totalPages = Math.ceil(totalElements / size)
+
+      return {
+        content: filtered.slice(page * size, (page + 1) * size),
+        pageable: { pageNumber: page, pageSize: size },
+        totalElements,
+        totalPages,
+        first: page === 0,
+        last: page >= totalPages - 1 || totalPages === 0,
+      }
     }
-    const { data } = await api.get<CinemaResponse[]>('/cinemas')
-    return data
+
+    const params = new URLSearchParams()
+    params.append('page', page.toString())
+    params.append('size', size.toString())
+    if (search) params.append('search', search)
+
+    const { data } = await api.get<DotNetPagedResponse<CinemaResponse>>(
+      `/cinemas?${params.toString()}`,
+    )
+    return mapToPageResponse(data)
   },
 
-  getMyCinemas: async (): Promise<CinemaResponse[]> => {
+  getMyCinemas: async (
+    page: number = 0,
+    size: number = 10,
+    search?: string,
+  ): Promise<PageResponse<CinemaResponse>> => {
     if (isMock) {
-      const { MOCK_CINEMAS } = await import('@/api/mocks/cinemas.mock')
-      return MOCK_CINEMAS
+      return cinemasApi.getAllCinemas(page, size, search)
     }
-    const { data } = await api.get<CinemaResponse[]>('/cinemas/my')
-    return data
+
+    const params = new URLSearchParams()
+    params.append('page', page.toString())
+    params.append('size', size.toString())
+    if (search) params.append('search', search)
+
+    const { data } = await api.get<DotNetPagedResponse<CinemaResponse>>(
+      `/cinemas/my?${params.toString()}`,
+    )
+    return mapToPageResponse(data)
   },
 
   getCinemaById: async (id: string): Promise<CinemaResponse> => {

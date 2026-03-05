@@ -7,10 +7,21 @@ import type {
   UpdateShowtimeRequest,
 } from '@/types/showtime.type'
 
-export const useShowtimesByMovie = (movieId: string) => {
+export const useShowtimesByMovie = (
+  movieId: string,
+  page: number = 0,
+  size: number = 50,
+  fromDate?: string,
+  toDate?: string,
+) => {
   return useQuery({
-    queryKey: showtimeKeys.listByMovie(movieId),
-    queryFn: () => showtimesApi.getShowtimesByMovieId(movieId),
+    // Include all filters in the query key!
+    queryKey: [
+      ...showtimeKeys.listByMovie(movieId),
+      { page, size, fromDate, toDate },
+    ],
+    queryFn: () =>
+      showtimesApi.getShowtimesByMovieId(movieId, page, size, fromDate, toDate),
     enabled: !!movieId,
   })
 }

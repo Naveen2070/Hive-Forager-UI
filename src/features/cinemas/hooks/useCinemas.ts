@@ -7,17 +7,26 @@ import type {
   UpdateCinemaRequest,
 } from '@/types/cinema.type'
 
-export const useCinemas = () => {
+export const useCinemas = (
+  page: number = 0,
+  size: number = 10,
+  search?: string,
+) => {
   return useQuery({
-    queryKey: cinemaKeys.lists(),
-    queryFn: cinemasApi.getAllCinemas,
+    queryKey: [...cinemaKeys.lists(), { page, size, search }],
+    queryFn: () => cinemasApi.getAllCinemas(page, size, search),
   })
 }
 
-export const useMyCinemas = (enabled: boolean) => {
+export const useMyCinemas = (
+  enabled: boolean,
+  page: number = 0,
+  size: number = 10,
+  search?: string,
+) => {
   return useQuery({
-    queryKey: cinemaKeys.mine(),
-    queryFn: cinemasApi.getMyCinemas,
+    queryKey: [...cinemaKeys.mine(), { page, size, search }],
+    queryFn: () => cinemasApi.getMyCinemas(page, size, search),
     enabled,
   })
 }
