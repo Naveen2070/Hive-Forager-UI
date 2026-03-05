@@ -29,7 +29,7 @@ export const MOCK_MY_TICKETS: MyTicketResponse[] = [
       { row: 5, col: 6 },
     ],
     totalAmount: 31.0,
-    status: TicketStatus.PAID,
+    status: TicketStatus.CONFIRMED,
     createdAtUtc: '2026-05-10T14:23:05Z',
   },
   {
@@ -48,7 +48,7 @@ export const MOCK_MY_TICKETS: MyTicketResponse[] = [
       { row: 2, col: 11 },
     ],
     totalAmount: 45.0,
-    status: TicketStatus.PAID,
+    status: TicketStatus.CONFIRMED,
     createdAtUtc: '2025-12-01T10:00:00Z',
   },
 ]

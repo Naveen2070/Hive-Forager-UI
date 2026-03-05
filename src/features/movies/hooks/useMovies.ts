@@ -5,8 +5,8 @@ import { movieKeys } from '../movies.keys'
 import type { CreateMovieRequest, UpdateMovieRequest } from '@/types/movie.type'
 
 export const fetchMovies = async (
-  page: number,
-  size: number,
+  page: number = 0,
+  size: number = 10,
   search?: string,
 ) => {
   return moviesApi.getAllMovies(page, size, search)

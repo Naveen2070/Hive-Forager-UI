@@ -134,7 +134,7 @@ export const ShowtimeModal = ({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent className="bg-slate-900 border-slate-800 text-slate-200">
-                      {myCinemas?.map((cinema) => (
+                      {myCinemas?.content?.map((cinema) => (
                         <SelectItem key={cinema.id} value={cinema.id}>
                           {cinema.name}
                         </SelectItem>

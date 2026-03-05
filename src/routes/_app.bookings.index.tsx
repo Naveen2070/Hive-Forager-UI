@@ -123,7 +123,7 @@ function MyBookingsPage() {
       sortDate: startTime,
       isUpcoming:
         endTime >= now &&
-        [TicketStatus.PAID, TicketStatus.PENDING].includes(
+        [TicketStatus.PENDING, TicketStatus.PENDING].includes(
           t.status as TicketStatus,
         ),
       data: t,
