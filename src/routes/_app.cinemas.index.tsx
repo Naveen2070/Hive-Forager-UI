@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Plus } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Plus, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 import { useAuthStore } from '@/store/auth.store'
 import { UserRole } from '@/types/enum'
@@ -33,6 +34,28 @@ function CinemasPage() {
     isOrganizer ? 'mine' : 'browse',
   )
 
+  // -- Pagination & Search State --
+  const [page, setPage] = useState(0)
+  const pageSize = 12
+  const [searchInput, setSearchInput] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
+
+  // Reset pagination/search when switching tabs
+  useEffect(() => {
+    setPage(0)
+    setSearchInput('')
+    setDebouncedSearch('')
+  }, [section])
+
+  // Debounce logic
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchInput)
+      setPage(0)
+    }, 500)
+    return () => clearTimeout(timer)
+  }, [searchInput])
+
   // -- Modal State --
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingCinema, setEditingCinema] = useState<CinemaResponse | null>(
@@ -45,14 +68,14 @@ function CinemasPage() {
     isLoading: isLoadingPublic,
     isError: isErrorPublic,
     refetch: refetchPublic,
-  } = useCinemas()
+  } = useCinemas(page, pageSize, debouncedSearch)
 
   const {
     data: myCinemas,
     isLoading: isLoadingMine,
     isError: isErrorMine,
     refetch: refetchMine,
-  } = useMyCinemas(isOrganizer)
+  } = useMyCinemas(isOrganizer, page, pageSize, debouncedSearch)
 
   const createMutation = useCreateCinema()
   const updateMutation = useUpdateCinema()
@@ -75,10 +98,7 @@ function CinemasPage() {
 
   const handleFormSubmit = (formData: createCinemaValues) => {
     if (editingCinema) {
-      const updatePayload = {
-        name: formData.name,
-        location: formData.location,
-      }
+      const updatePayload = { name: formData.name, location: formData.location }
       updateMutation.mutate(
         { id: editingCinema.id, data: updatePayload },
         { onSuccess: () => setIsModalOpen(false) },
@@ -89,6 +109,9 @@ function CinemasPage() {
       })
     }
   }
+
+  // Determine which data object is currently active
+  const activeData = section === 'mine' ? myCinemas : publicCinemas
 
   return (
     <div className="space-y-8 p-6 md:p-8 max-w-7xl mx-auto">
@@ -104,14 +127,28 @@ function CinemasPage() {
           </p>
         </div>
 
-        {isOrganizer && section === 'mine' && (
-          <Button
-            onClick={handleOpenCreate}
-            className="bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-bold"
-          >
-            <Plus className="mr-2 h-4 w-4" /> Register Cinema
-          </Button>
-        )}
+        <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+          {/* 👉 Search Bar */}
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+            <Input
+              type="text"
+              placeholder="Search cinemas..."
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              className="pl-9 h-10 bg-slate-900 border-slate-800 text-slate-100 placeholder:text-slate-500 rounded-lg"
+            />
+          </div>
+
+          {isOrganizer && section === 'mine' && (
+            <Button
+              onClick={handleOpenCreate}
+              className="w-full sm:w-auto bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-bold h-10"
+            >
+              <Plus className="mr-2 h-4 w-4" /> Register Cinema
+            </Button>
+          )}
+        </div>
       </div>
 
       {isOrganizer ? (
@@ -144,10 +181,14 @@ function CinemasPage() {
               />
             ) : (
               <CinemaGrid
-                cinemas={myCinemas || []}
+                cinemas={myCinemas?.content || []}
                 isLoading={isLoadingMine}
                 isOwner={true}
-                emptyMessage="You haven't registered any cinemas yet."
+                emptyMessage={
+                  debouncedSearch
+                    ? `No cinemas found matching "${debouncedSearch}".`
+                    : "You haven't registered any cinemas yet."
+                }
                 onEdit={handleOpenEdit}
                 onDelete={handleDelete}
               />
@@ -163,10 +204,14 @@ function CinemasPage() {
               />
             ) : (
               <CinemaGrid
-                cinemas={publicCinemas || []}
+                cinemas={publicCinemas?.content || []}
                 isLoading={isLoadingPublic}
                 isOwner={false}
-                emptyMessage="No cinemas found."
+                emptyMessage={
+                  debouncedSearch
+                    ? `No cinemas found matching "${debouncedSearch}".`
+                    : 'No cinemas found.'
+                }
               />
             )}
           </TabsContent>
@@ -181,12 +226,43 @@ function CinemasPage() {
             />
           ) : (
             <CinemaGrid
-              cinemas={publicCinemas || []}
+              cinemas={publicCinemas?.content || []}
               isLoading={isLoadingPublic}
               isOwner={false}
-              emptyMessage="No cinemas found."
+              emptyMessage={
+                debouncedSearch
+                  ? `No cinemas found matching "${debouncedSearch}".`
+                  : 'No cinemas found.'
+              }
             />
           )}
+        </div>
+      )}
+
+      {/* 👉 Global Pagination Controls */}
+      {activeData && activeData.totalPages > 1 && (
+        <div className="flex items-center justify-center gap-4 pt-4">
+          <Button
+            variant="outline"
+            className="bg-slate-900 border-slate-800 hover:bg-slate-800 text-slate-300"
+            onClick={() => setPage((p) => Math.max(0, p - 1))}
+            disabled={activeData.first}
+          >
+            <ChevronLeft className="w-4 h-4 mr-2" />
+            Previous
+          </Button>
+          <span className="text-slate-400 text-sm font-medium">
+            Page {activeData.pageable.pageNumber + 1} of {activeData.totalPages}
+          </span>
+          <Button
+            variant="outline"
+            className="bg-slate-900 border-slate-800 hover:bg-slate-800 text-slate-300"
+            onClick={() => setPage((p) => p + 1)}
+            disabled={activeData.last}
+          >
+            Next
+            <ChevronRight className="w-4 h-4 ml-2" />
+          </Button>
         </div>
       )}
 

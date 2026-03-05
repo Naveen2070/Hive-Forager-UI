@@ -1,10 +1,19 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Link } from '@tanstack/react-router'
-import { Edit, Info, MapPin, Ticket, Trash2 } from 'lucide-react'
+import {
+  ChevronLeft,
+  ChevronRight,
+  Edit,
+  Info,
+  MapPin,
+  Ticket,
+  Trash2,
+} from 'lucide-react'
 import { useAuditoriums } from '@/features/auditoriums/hooks/useAuditoriums'
 import { useCinemas } from '@/features/cinemas/hooks/useCinemas'
 import { DataFallback } from '@/components/shared/DataFallback'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '@/components/ui/button'
 import { useShowtimesByMovie } from '@/features/showtimes/hooks/useShowTimes'
 
 interface ShowtimeSelectorProps {
@@ -20,30 +29,45 @@ export const ShowtimeSelector = ({
   onEdit,
   onDelete,
 }: ShowtimeSelectorProps) => {
+  // Add Pagination State
+  const [page, setPage] = useState(0)
+  const pageSize = 50
+
+  // Pass state to the hook
   const {
-    data: showtimes,
+    data: showtimesData,
     isLoading: loadingTimes,
     isError,
     refetch,
-  } = useShowtimesByMovie(movieId)
-  const { data: auditoriums, isLoading: loadingAuds } = useAuditoriums()
-  const { data: cinemas, isLoading: loadingCinemas } = useCinemas()
+  } = useShowtimesByMovie(movieId, page, pageSize)
+
+  const { data: auditoriumsData, isLoading: loadingAuds } = useAuditoriums()
+  const { data: cinemasData, isLoading: loadingCinemas } = useCinemas()
 
   const isLoading = loadingTimes || loadingAuds || loadingCinemas
 
   const groupedShowtimes = useMemo(() => {
+    // Safely access .content from the new paginated wrappers
+    const showtimes = showtimesData?.content
+    const auditoriums = auditoriumsData
+    const cinemas = cinemasData?.content || cinemasData
+
     if (!showtimes || !auditoriums || !cinemas) return []
 
     const grouped: Record<string, any> = {}
 
     showtimes.forEach((show) => {
-      const aud = auditoriums.find((a) => a.id === show.auditoriumId)
+      // Find auditorium and cinema (assuming arrays for now, adjust if you paginated these)
+      const aud = Array.isArray(auditoriums)
+        ? auditoriums.find((a) => a.id === show.auditoriumId)
+        : null
       if (!aud) return
 
-      const cinema = cinemas.find((c) => c.id === aud.cinemaId)
+      const cinema = Array.isArray(cinemas)
+        ? cinemas.find((c) => c.id === aud.cinemaId)
+        : null
       if (!cinema) return
 
-      // Initialize Cinema group if it doesn't exist
       if (!grouped[cinema.id]) {
         grouped[cinema.id] = {
           cinemaName: cinema.name,
@@ -52,7 +76,6 @@ export const ShowtimeSelector = ({
         }
       }
 
-      // Initialize Auditorium group within the Cinema
       if (!grouped[cinema.id].auditoriums[aud.id]) {
         grouped[cinema.id].auditoriums[aud.id] = {
           auditoriumName: aud.name,
@@ -77,7 +100,6 @@ export const ShowtimeSelector = ({
       })
     })
 
-    // Sort times sequentially within each auditorium
     Object.values(grouped).forEach((cinema: any) => {
       Object.values(cinema.auditoriums).forEach((aud: any) => {
         aud.times.sort(
@@ -89,7 +111,7 @@ export const ShowtimeSelector = ({
     })
 
     return Object.values(grouped)
-  }, [showtimes, auditoriums, cinemas])
+  }, [showtimesData, auditoriumsData, cinemasData])
 
   if (isLoading) {
     return (
@@ -104,7 +126,7 @@ export const ShowtimeSelector = ({
     return (
       <DataFallback
         title="Ticketing Unavailable"
-        message="Our worker bees couldn't fetch the showtimes right now."
+        message="Our worker bees couldn't fetch the showtimes."
         onRetry={refetch}
       />
     )
@@ -131,7 +153,6 @@ export const ShowtimeSelector = ({
           key={index}
           className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6"
         >
-          {/* Cinema Header */}
           <div className="mb-6 border-b border-slate-800/50 pb-4">
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
               <h3 className="text-xl font-bold text-slate-100 flex items-center">
@@ -148,7 +169,6 @@ export const ShowtimeSelector = ({
             </p>
           </div>
 
-          {/* Auditoriums & Times */}
           <div className="space-y-6">
             {Object.values(cinemaGroup.auditoriums).map(
               (audGroup: any, aIndex: number) => (
@@ -156,11 +176,9 @@ export const ShowtimeSelector = ({
                   <h4 className="text-sm font-semibold text-slate-300 uppercase tracking-wider mb-3">
                     {audGroup.auditoriumName}
                   </h4>
-
                   <div className="flex flex-wrap gap-4 mt-2">
                     {audGroup.times.map((timeObj: any) => (
                       <div key={timeObj.id} className="relative group">
-                        {/* The Clickable Button for Attendees */}
                         <Link
                           to="/checkout/$showtimeId"
                           params={{ showtimeId: timeObj.id }}
@@ -174,7 +192,6 @@ export const ShowtimeSelector = ({
                           </span>
                         </Link>
 
-                        {/* Organizer Action Overlay (Floating Edit/Delete) */}
                         {isOrganizer && (
                           <div className="absolute -top-2 -right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                             <button
@@ -206,6 +223,34 @@ export const ShowtimeSelector = ({
           </div>
         </div>
       ))}
+
+      {/* Showtime Pagination Controls */}
+      {showtimesData && showtimesData.totalPages > 1 && (
+        <div className="flex items-center justify-center gap-4 pt-4 mt-4 border-t border-slate-800/50">
+          <Button
+            variant="outline"
+            className="bg-slate-900 border-slate-700 hover:bg-slate-800 text-slate-300"
+            onClick={() => setPage((p) => Math.max(0, p - 1))}
+            disabled={showtimesData.first}
+          >
+            <ChevronLeft className="w-4 h-4 mr-2" />
+            Earlier Shows
+          </Button>
+          <span className="text-slate-400 text-sm font-medium">
+            Page {showtimesData.pageable.pageNumber + 1} of{' '}
+            {showtimesData.totalPages}
+          </span>
+          <Button
+            variant="outline"
+            className="bg-slate-900 border-slate-700 hover:bg-slate-800 text-slate-300"
+            onClick={() => setPage((p) => p + 1)}
+            disabled={showtimesData.last}
+          >
+            Later Shows
+            <ChevronRight className="w-4 h-4 ml-2" />
+          </Button>
+        </div>
+      )}
     </div>
   )
 }

@@ -4,18 +4,26 @@ import { moviesApi } from '@/api/movies'
 import { movieKeys } from '../movies.keys'
 import type { CreateMovieRequest, UpdateMovieRequest } from '@/types/movie.type'
 
-export const fetchMovies = async () => {
-  return moviesApi.getAllMovies()
+export const fetchMovies = async (
+  page: number,
+  size: number,
+  search?: string,
+) => {
+  return moviesApi.getAllMovies(page, size, search)
 }
 
 export const fetchMovieDetail = async (id: string) => {
   return moviesApi.getMovieById(id)
 }
 
-export const useMovies = () => {
+export const useMovies = (
+  page: number = 0,
+  size: number = 10,
+  search?: string,
+) => {
   return useQuery({
-    queryKey: movieKeys.lists(),
-    queryFn: fetchMovies,
+    queryKey: [...movieKeys.lists(), { page, size, search }],
+    queryFn: () => fetchMovies(page, size, search),
   })
 }
 
