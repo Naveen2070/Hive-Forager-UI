@@ -36,7 +36,7 @@ export const MovieReceiptDialog = ({
 
   const getStatusConfig = (status: TicketStatus | string) => {
     switch (status) {
-      case TicketStatus.PAID:
+      case TicketStatus.CONFIRMED:
         return {
           icon: CheckCircle2,
           label: 'Payment Successful',

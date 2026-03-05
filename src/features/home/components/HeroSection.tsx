@@ -18,10 +18,6 @@ const fetchFeaturedEvents = async () => {
 }
 
 const fetchFeaturedMovies = async () => {
-  if (env.VITE_ENABLE_MOCK_AUTH === 'true') {
-    const { MOVIES_MOCK } = await import('@/api/mocks/movies.mock')
-    return MOVIES_MOCK
-  }
   return moviesApi.getAllMovies()
 }
 
@@ -62,7 +58,7 @@ export const HeroSection = () => {
   })
 
   const topEvent = eventsData?.content?.[0]
-  const topMovie = moviesData?.[0]
+  const topMovie = moviesData?.content?.[0]
 
   return (
     <section className="relative pt-28 pb-24 md:pt-28 md:pb-32 px-6 overflow-hidden min-h-[85vh] flex items-center">

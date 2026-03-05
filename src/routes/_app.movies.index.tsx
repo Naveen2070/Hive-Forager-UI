@@ -32,7 +32,7 @@ export const Route = createFileRoute('/_app/movies/')({
     try {
       await queryClient.ensureQueryData({
         queryKey: movieKeys.lists(),
-        queryFn: fetchMovies,
+        queryFn: () => fetchMovies(0, 10),
       })
     } catch (error) {
       console.error('Failed to load movies:', error)
