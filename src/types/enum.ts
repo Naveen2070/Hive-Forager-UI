@@ -42,6 +42,8 @@ export enum SeatStatus {
 
 export enum TicketStatus {
   PENDING = 'Pending',
-  PAID = 'Paid',
+  CONFIRMED = 'Confirmed',
+  USED = 'Used',
+  EXPIRED = 'Expired',
   CANCELLED = 'Cancelled',
 }
