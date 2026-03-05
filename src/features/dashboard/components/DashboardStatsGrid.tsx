@@ -9,8 +9,13 @@ import {
 import type { DashboardStatsDTO } from '@/types/dashboard.type'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
-export const DashboardStatsGrid = ({ stats }: { stats: DashboardStatsDTO }) => {
-  // Helper to render growth percentage
+export const DashboardStatsGrid = ({
+  stats,
+  mode,
+}: {
+  stats: DashboardStatsDTO
+  mode: 'combined' | 'events' | 'movies'
+}) => {
   const renderGrowth = (percent: number) => {
     const isPositive = percent >= 0
     return (
@@ -27,9 +32,15 @@ export const DashboardStatsGrid = ({ stats }: { stats: DashboardStatsDTO }) => {
     )
   }
 
+  const activityLabel =
+    mode === 'events'
+      ? 'Active Events'
+      : mode === 'movies'
+        ? 'Active Movies'
+        : 'Active Programs'
+
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      {/* 1. Revenue Card */}
       <Card className="bg-slate-950 border-slate-800">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium text-slate-400">
@@ -49,7 +60,6 @@ export const DashboardStatsGrid = ({ stats }: { stats: DashboardStatsDTO }) => {
         </CardContent>
       </Card>
 
-      {/* 2. Tickets Sold Card */}
       <Card className="bg-slate-950 border-slate-800">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium text-slate-400">
@@ -59,7 +69,7 @@ export const DashboardStatsGrid = ({ stats }: { stats: DashboardStatsDTO }) => {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold text-white">
-            {stats.totalTicketsSold}
+            {stats.totalTicketsSold.toLocaleString()}
           </div>
           <p className="text-xs text-slate-500">
             +{stats.ticketsSoldLastWeek} new this week
@@ -67,7 +77,6 @@ export const DashboardStatsGrid = ({ stats }: { stats: DashboardStatsDTO }) => {
         </CardContent>
       </Card>
 
-      {/* 3. Pending Payments (New Actionable Metric) */}
       <Card className="bg-slate-950 border-slate-800">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium text-slate-400">
@@ -83,11 +92,10 @@ export const DashboardStatsGrid = ({ stats }: { stats: DashboardStatsDTO }) => {
         </CardContent>
       </Card>
 
-      {/* 4. Active Events */}
       <Card className="bg-slate-950 border-slate-800">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium text-slate-400">
-            Active Events
+            {activityLabel}
           </CardTitle>
           <Activity className="h-4 w-4 text-purple-500" />
         </CardHeader>

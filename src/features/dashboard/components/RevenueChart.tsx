@@ -18,7 +18,7 @@ export const RevenueChart = ({ data }: { data: Array<RevenueChartPoint> }) => {
         <CardTitle className="text-slate-100">Revenue Overview</CardTitle>
       </CardHeader>
       <CardContent className="pl-2">
-        <div className="h-87.5 w-full">
+        <div className="h-[350px] w-full min-h-[350px]">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data}>
               <defs>
