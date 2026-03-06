@@ -29,17 +29,22 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # 4. Type Check (Optional but recommended)
+      # 4. Run Tests
+      # This runs all vitest suites
+      - name: Run Tests
+        run: npm run test
+
+      # 5. Type Check (Optional but recommended)
       # This ensures you don't have TypeScript errors that would break production
       - name: Type Check
         run: npx tsc --noEmit
 
-      # 5. Build the Project
+      # 6. Build the Project
       # This runs 'vite build' and creates the 'dist/' folder
       - name: Build project
         run: npm run build
 
-      # 6. Upload Build Artifact (Optional)
+      # 7. Upload Build Artifact (Optional)
       # This saves your 'dist/' folder so you can download it from GitHub
       # or use it in a deployment job later.
 #      - name: Upload production build

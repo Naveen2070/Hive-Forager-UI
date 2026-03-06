@@ -54,6 +54,51 @@ export default defineConfig(({ mode }) => {
       }),
       tailwindcss(),
     ],
+    build: {
+      target: 'es2022',
+      minify: 'esbuild',
+      cssMinify: true,
+      sourcemap: false,
+      chunkSizeWarningLimit: 1000,
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              // Group React Core
+              if (
+                id.includes('react/') ||
+                id.includes('react-dom/') ||
+                id.includes('scheduler/')
+              ) {
+                return 'react-vendor'
+              }
+
+              // TanStack Suite
+              if (id.includes('@tanstack')) {
+                return 'tanstack-vendor'
+              }
+
+              // UI & Assets
+              if (id.includes('framer-motion')) {
+                return 'framer-vendor'
+              }
+              if (id.includes('lucide-react')) {
+                return 'icons-vendor'
+              }
+              if (id.includes('recharts')) {
+                return 'charts-vendor'
+              }
+              if (id.includes('@radix-ui')) {
+                return 'radix-vendor'
+              }
+              
+              // Standard Vendor Catch-all (stable dependencies)
+              return 'vendor'
+            }
+          },
+        },
+      },
+    },
     test: {
       globals: true,
       environment: 'jsdom',
