@@ -1,6 +1,6 @@
 import { act, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { MovieDetailsPage } from '../_app.movies.$movieId.index'
+import { MovieDetailsPage } from '../routes/_app.movies.$movieId.index'
 import { useAuthStore } from '@/store/auth.store'
 import { UserRole } from '@/types/enum'
 import { useMovieDetail } from '@/features/movies/hooks/useMovies'

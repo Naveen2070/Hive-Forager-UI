@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { CreateEventPage } from '../_app.events.create'
+import { CreateEventPage } from '../routes/_app.events.create'
 import { useAuthStore } from '@/store/auth.store'
 import { useCreateEvent } from '@/features/events/hooks/useEvents'
 import { createWrapper } from '@/test/utils'

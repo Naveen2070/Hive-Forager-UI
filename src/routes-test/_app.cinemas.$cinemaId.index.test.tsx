@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { CinemaDetailPage } from '../_app.cinemas.$cinemaId.index'
+import { CinemaDetailPage } from '../routes/_app.cinemas.$cinemaId.index'
 import { useAuthStore } from '@/store/auth.store'
 import { UserRole } from '@/types/enum'
 import { createWrapper } from '@/test/utils'

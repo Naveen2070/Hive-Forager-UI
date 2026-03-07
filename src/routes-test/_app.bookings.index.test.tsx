@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { Route } from '../_app.bookings.index'
+import { Route } from '../routes/_app.bookings.index'
 import { useMyBookings } from '@/features/bookings/hooks/useMyBookings'
 import { useMyTickets } from '@/features/tickets/hooks/useTickets'
 import { createWrapper } from '@/test/utils'
@@ -123,7 +123,7 @@ describe('MyBookings Page Route', () => {
       render(<MyBookingsPage />, { wrapper: createWrapper() })
     })
 
-    const historyButton = await screen.findByRole('button', {
+    const historyButton = screen.getByRole('button', {
       name: /History/i,
     })
     await act(async () => {
@@ -131,5 +131,41 @@ describe('MyBookings Page Route', () => {
     })
 
     expect(await screen.findByText(/Past Concert/i)).toBeInTheDocument()
+  })
+
+  it('renders loading skeleton when either API is loading', async () => {
+    ;(useMyBookings as any).mockReturnValue({
+      isLoading: true,
+    })
+    ;(useMyTickets as any).mockReturnValue({
+      isLoading: false,
+    })
+
+    const MyBookingsPage = (Route as any).options.component
+    await act(async () => {
+      render(<MyBookingsPage />, { wrapper: createWrapper() })
+    })
+
+    const skeletons = screen.getAllByRole('generic').filter((el) => 
+      el.className?.includes('animate-pulse')
+    )
+    expect(skeletons.length).toBeGreaterThan(0)
+  })
+
+  it('renders error fallback when either API fails', async () => {
+    ;(useMyBookings as any).mockReturnValue({
+      isError: true,
+      refetch: vi.fn(),
+    })
+    ;(useMyTickets as any).mockReturnValue({
+      isError: false,
+    })
+
+    const MyBookingsPage = (Route as any).options.component
+    await act(async () => {
+      render(<MyBookingsPage />, { wrapper: createWrapper() })
+    })
+
+    expect(screen.getByText(/Wallet Unavailable/i)).toBeInTheDocument()
   })
 })

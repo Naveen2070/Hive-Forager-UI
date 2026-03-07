@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { Route } from '../_auth.login'
+import { Route } from '../routes/_auth.register'
 import { useAuthStore } from '@/store/auth.store'
 
 vi.mock('@tanstack/react-router', () => ({
@@ -20,13 +20,13 @@ vi.mock('@/store/auth.store', () => ({
   },
 }))
 
-describe('Login Route Guard', () => {
+describe('Register Route Guard', () => {
   it('redirects to home if already authenticated', () => {
     ;(useAuthStore.getState as any).mockReturnValue({ isAuthenticated: true })
     const beforeLoad = (Route as any).options.beforeLoad
 
     try {
-      beforeLoad({ search: {} })
+      beforeLoad()
     } catch (e: any) {
       expect(e.redirect).toEqual({ to: '/' })
     }
@@ -36,6 +36,6 @@ describe('Login Route Guard', () => {
     ;(useAuthStore.getState as any).mockReturnValue({ isAuthenticated: false })
     const beforeLoad = (Route as any).options.beforeLoad
 
-    expect(() => beforeLoad({ search: {} })).not.toThrow()
+    expect(() => beforeLoad()).not.toThrow()
   })
 })

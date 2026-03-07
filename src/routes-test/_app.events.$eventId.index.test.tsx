@@ -1,6 +1,6 @@
 import { act, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { EventDetailsPage } from '../_app.events.$eventId.index'
+import { EventDetailsPage } from '../routes/_app.events.$eventId.index'
 import { useEventDetail } from '@/features/events/hooks/useEvents'
 import { createWrapper } from '@/test/utils'
 

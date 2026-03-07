@@ -1,6 +1,6 @@
 import { act, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { AppLayout, Route } from '../_app'
+import { AppLayout, Route } from '../routes/_app'
 import { useAuthStore } from '@/store/auth.store'
 import { createWrapper } from '@/test/utils'
 

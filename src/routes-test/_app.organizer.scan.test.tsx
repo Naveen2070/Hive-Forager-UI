@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { ScannerPage } from '../_app.organizer.scan'
+import { ScannerPage } from '../routes/_app.organizer.scan'
 import { useCheckIn } from '@/features/organizer/hooks/useCheckIn'
 import { useCheckInTicket } from '@/features/tickets/hooks/useTickets'
 import { createWrapper } from '@/test/utils'

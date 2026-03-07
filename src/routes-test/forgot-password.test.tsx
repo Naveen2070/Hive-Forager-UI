@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { Route } from '../forgot-password'
+import { Route } from '../routes/forgot-password'
 import { authApi } from '@/api/auth'
 import { createWrapper } from '@/test/utils'
 

@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { SettingsPage } from '../_app.settings'
+import { SettingsPage } from '../routes/_app.settings'
 import { useSettings } from '@/features/settings/hooks/useSettings'
 import { createWrapper } from '@/test/utils'
 

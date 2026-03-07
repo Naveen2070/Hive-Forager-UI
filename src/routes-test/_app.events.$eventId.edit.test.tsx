@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { EditEventPage } from '../_app.events.$eventId.edit'
 import { useQuery } from '@tanstack/react-query'
+import { EditEventPage } from '../routes/_app.events.$eventId.edit'
 import { useUpdateEvent } from '@/features/events/hooks/useEvents'
 import { createWrapper } from '@/test/utils'
 

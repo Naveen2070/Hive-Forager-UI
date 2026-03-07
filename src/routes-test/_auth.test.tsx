@@ -1,6 +1,6 @@
 import { act, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import { AuthLayout } from '../_auth'
+import { AuthLayout } from '../routes/_auth'
 import { createWrapper } from '@/test/utils'
 
 vi.mock('@tanstack/react-router', () => ({

@@ -1,6 +1,6 @@
 import { act, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import { Route } from '../index'
+import { Route } from '@/routes'
 import { createWrapper } from '@/test/utils'
 
 vi.mock('@/features/home/components/LandingNavbar', () => ({
@@ -40,7 +40,7 @@ describe('LandingPage Route', () => {
 
     const LandingPage = (Route as any).options.component
     await act(async () => {
-      render(<LandingPage />, { wrapper: createWrapper() })
+      await render(<LandingPage />, { wrapper: createWrapper() })
     })
 
     expect(screen.getByTestId('navbar')).toBeInTheDocument()

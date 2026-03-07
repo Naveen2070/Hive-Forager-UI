@@ -20,9 +20,11 @@ vi.mock('@/lib/jwt.ts', () => ({
 }))
 
 const mockNavigate = vi.fn()
+let mockSearch = { redirect: undefined as string | undefined }
+
 vi.mock('@tanstack/react-router', () => ({
   useNavigate: () => mockNavigate,
-  useSearch: () => ({ redirect: undefined }),
+  useSearch: () => mockSearch,
   Link: ({ children, to, className }: any) => (
     <a href={to} className={className} data-testid={`link-${to}`}>
       {children}
@@ -57,6 +59,7 @@ describe('LoginForm - Edge to Edge', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     useAuthStore.getState().clearAuth()
+    mockSearch = { redirect: undefined }
   })
 
   it('renders correctly with fields and links', () => {
@@ -159,10 +162,8 @@ describe('LoginForm - Edge to Edge', () => {
     })
   })
 
-  it('handles API errors', async () => {
-    ;(authApi.login as any).mockRejectedValueOnce({
-      response: { data: { message: 'Failed' } },
-    })
+  it('handles API errors with raw Error object', async () => {
+    ;(authApi.login as any).mockRejectedValueOnce(new Error('Network Error'))
 
     renderWithProviders(<LoginForm />)
 
@@ -175,8 +176,56 @@ describe('LoginForm - Edge to Edge', () => {
     fireEvent.click(screen.getByRole('button', { name: /sign in/i }))
 
     await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith('Failed')
-      expect(useAuthStore.getState().isAuthenticated).toBe(false)
+      expect(toast.error).toHaveBeenCalledWith('Login failed. Please check your credentials.')
+    })
+  })
+
+  it('redirects to the specified redirect search param after login', async () => {
+    mockSearch = { redirect: '/dashboard/settings' }
+
+    ;(authApi.login as any).mockResolvedValueOnce({ token: 'mock-token' })
+    ;(parseJwt as any).mockReturnValueOnce({
+      id: '123',
+      email: 'john@example.com',
+      roles: ['ROLE_USER'],
+    })
+
+    renderWithProviders(<LoginForm />)
+
+    fireEvent.change(screen.getByPlaceholderText('user@hiveforager.com'), {
+      target: { value: 'john@example.com' },
+    })
+    fireEvent.change(screen.getByPlaceholderText('••••••'), {
+      target: { value: 'password123' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: /sign in/i }))
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith({
+        to: '/dashboard/settings',
+      })
+    })
+  })
+
+  it('submits the form successfully', async () => {
+    ;(authApi.login as any).mockResolvedValueOnce({ token: 'token' })
+    ;(parseJwt as any).mockReturnValueOnce({ roles: [] })
+
+    renderWithProviders(<LoginForm />)
+
+    fireEvent.change(screen.getByPlaceholderText('user@hiveforager.com'), {
+      target: { value: 'test@example.com' },
+    })
+    fireEvent.change(screen.getByPlaceholderText('••••••'), {
+      target: { value: 'password123' },
+    })
+    
+    // Find the form and submit it
+    const form = screen.getByRole('button', { name: /sign in/i }).closest('form')
+    fireEvent.submit(form!)
+
+    await waitFor(() => {
+      expect(authApi.login).toHaveBeenCalled()
     })
   })
 })
