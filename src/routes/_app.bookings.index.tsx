@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { bookingsApi } from '@/api/booking.ts'
 import { bookingKeys } from '@/features/bookings/bookings.keys.ts'
-import { BookingStatus, TicketStatus } from '@/types/enum'
+import { BookingStatus } from '@/types/enum'
 import { DataFallback } from '@/components/shared/DataFallback'
 
 const fetchMyBookings = async () => {
@@ -54,7 +54,7 @@ export const Route = createFileRoute('/_app/bookings/')({
   },
 })
 
-function MyBookingsPage() {
+export function MyBookingsPage() {
   const [viewMode, setViewMode] = useState<'upcoming' | 'history'>('upcoming')
 
   // Fetch both sets of data
@@ -121,11 +121,7 @@ function MyBookingsPage() {
       id: t.ticketId,
       type: 'MOVIE' as const,
       sortDate: startTime,
-      isUpcoming:
-        endTime >= now &&
-        [TicketStatus.PENDING, TicketStatus.PENDING].includes(
-          t.status as TicketStatus,
-        ),
+      isUpcoming: startTime >= now || endTime >= now,
       data: t,
     }
   })

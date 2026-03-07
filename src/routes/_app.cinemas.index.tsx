@@ -25,7 +25,7 @@ export const Route = createFileRoute('/_app/cinemas/')({
   component: CinemasPage,
 })
 
-function CinemasPage() {
+export function CinemasPage() {
   const { user } = useAuthStore()
   const isOrganizer =
     user?.role === UserRole.ORGANIZER || user?.role === UserRole.SUPER_ADMIN

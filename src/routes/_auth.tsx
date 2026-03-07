@@ -12,7 +12,7 @@ export const Route = createFileRoute('/_auth')({
   component: AuthLayout,
 })
 
-function AuthLayout() {
+export function AuthLayout() {
   const location = useLocation()
   return (
     <div className="min-h-screen grid lg:grid-cols-2 bg-slate-950 text-slate-100">

@@ -40,7 +40,7 @@ export const Route = createFileRoute('/_app/movies/')({
   },
 })
 
-function RouteComponent() {
+export function MoviesPage() {
   const { user } = useAuthStore()
   const isOrganizer =
     user?.role === UserRole.ORGANIZER || user?.role === UserRole.SUPER_ADMIN

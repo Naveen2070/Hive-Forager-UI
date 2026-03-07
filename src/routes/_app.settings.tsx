@@ -33,7 +33,7 @@ export const Route = createFileRoute('/_app/settings')({
   },
 })
 
-function SettingsPage() {
+export function SettingsPage() {
   const [activeTab, setActiveTab] = useState('profile')
 
   const {

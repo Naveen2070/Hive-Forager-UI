@@ -38,7 +38,7 @@ export const Route = createFileRoute('/_app/events/$eventId/edit')({
   },
 })
 
-function EditEventPage() {
+export function EditEventPage() {
   const { eventId } = useParams({ from: '/_app/events/$eventId/edit' })
   const id = Number(eventId)
 

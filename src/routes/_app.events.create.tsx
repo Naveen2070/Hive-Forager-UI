@@ -11,7 +11,7 @@ export const Route = createFileRoute('/_app/events/create')({
   component: CreateEventPage,
 })
 
-function CreateEventPage() {
+export function CreateEventPage() {
   const { mutate: createEvent, isPending } = useCreateEvent()
   const { user } = useAuthStore()
 

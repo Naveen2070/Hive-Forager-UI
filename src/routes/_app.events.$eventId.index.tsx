@@ -40,7 +40,7 @@ export const Route = createFileRoute('/_app/events/$eventId/')({
   },
 })
 
-function EventDetailsPage() {
+export function EventDetailsPage() {
   const { eventId } = useParams({ from: '/_app/events/$eventId/' })
 
   const { event, isLoading, isError, refetch } = useEventDetail(Number(eventId))

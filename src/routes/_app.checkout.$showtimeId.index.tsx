@@ -16,7 +16,7 @@ export const Route = createFileRoute('/_app/checkout/$showtimeId/')({
   component: CheckoutPage,
 })
 
-function CheckoutPage() {
+export function CheckoutPage() {
   const { showtimeId } = useParams({ from: '/_app/checkout/$showtimeId/' })
   const navigate = useNavigate()
 

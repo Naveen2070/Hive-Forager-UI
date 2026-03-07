@@ -1,10 +1,10 @@
 import {
-  Outlet,
   createFileRoute,
+  Outlet,
   redirect,
   useLocation,
 } from '@tanstack/react-router'
-import {  motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { Sidebar } from '@/components/layouts/Sidebar'
 import { useAuthStore } from '@/store/auth.store'
 
@@ -23,7 +23,7 @@ export const Route = createFileRoute('/_app')({
   },
 })
 
-function AppLayout() {
+export function AppLayout() {
   const location = useLocation()
 
   return (

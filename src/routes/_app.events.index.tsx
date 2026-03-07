@@ -70,7 +70,7 @@ export const Route = createFileRoute('/_app/events/')({
   },
 })
 
-function EventsPage() {
+export function EventsPage() {
   const {
     isOrganizer,
     filters,

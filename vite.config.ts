@@ -91,7 +91,7 @@ export default defineConfig(({ mode }) => {
               if (id.includes('@radix-ui')) {
                 return 'radix-vendor'
               }
-              
+
               // Standard Vendor Catch-all (stable dependencies)
               return 'vendor'
             }
@@ -103,6 +103,15 @@ export default defineConfig(({ mode }) => {
       globals: true,
       environment: 'jsdom',
       setupFiles: ['./src/test/setup.ts'],
+      reporters: ['default', 'html'],
+      outputFile: './test-report/index.html',
+      coverage: {
+        provider: 'v8',
+        include: ['src/**'],
+        exclude: ['**/mocks/**', 'src/test/**', 'src/types/**'],
+        reporter: ['text', 'html'],
+        reportsDirectory: './coverage',
+      },
     },
     resolve: {
       alias: {

@@ -17,7 +17,7 @@ export const Route = createFileRoute('/_app/dashboard/')({
 
 type DashboardMode = 'combined' | 'events' | 'movies'
 
-function DashboardPage() {
+export function DashboardPage() {
   const [mode, setMode] = useState<DashboardMode>('combined')
   const { data: stats, isLoading, error, refetch } = useDashboardStats(mode)
 
