@@ -30,6 +30,7 @@ describe('api axios instance', () => {
     try {
       // @ts-ignore - access private interceptors for testing
       const onRejected = api.interceptors.response.handlers[0].rejected
+      // @ts-ignore
       await onRejected({ response: { status: 401 } })
     } catch (e) {
       // ignore

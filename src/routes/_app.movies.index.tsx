@@ -27,7 +27,7 @@ import type { MovieResponse } from '@/types/movie.type'
 import type { MovieFormValues } from '@/features/movies/movie.schema'
 
 export const Route = createFileRoute('/_app/movies/')({
-  component: RouteComponent,
+  component: MoviesPage,
   loader: async ({ context: { queryClient } }) => {
     try {
       await queryClient.ensureQueryData({

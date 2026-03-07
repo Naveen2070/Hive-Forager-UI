@@ -28,6 +28,7 @@ describe('useDashboardStats', () => {
     expect(result.current.data).toEqual(mockData)
     expect(dashboardApi.getStats).toHaveBeenCalledWith('combined')
 
+    // @ts-ignore
     rerender({ mode: 'events' })
     await waitFor(() =>
       expect(dashboardApi.getStats).toHaveBeenCalledWith('events'),

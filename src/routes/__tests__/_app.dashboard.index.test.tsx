@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { DashboardPage, Route } from '../_app.dashboard.index'
+import { Route } from '../_app.dashboard.index'
 import { useDashboardStats } from '@/features/dashboard/hooks/useDashboardStats'
 import { createWrapper } from '@/test/utils'
 

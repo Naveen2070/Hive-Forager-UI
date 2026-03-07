@@ -70,10 +70,10 @@ describe('Events Hooks', () => {
     })
 
     act(() => {
-      result.current.updateFilter('search', 'concert')
+      result.current.updateFilter('title', 'concert')
     })
 
-    expect(result.current.filters.search).toBe('concert')
+    expect(result.current.filters.title).toBe('concert')
     expect(result.current.page).toBe(0)
 
     act(() => {

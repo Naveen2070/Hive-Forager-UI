@@ -1,6 +1,6 @@
 import { act, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import { LandingPage, Route } from '../index'
+import { Route } from '../index'
 import { createWrapper } from '@/test/utils'
 
 vi.mock('@/features/home/components/LandingNavbar', () => ({

@@ -5,7 +5,7 @@ import { SeatStatus } from '@/types/enum'
 
 const mockSeatMap = [
   { row: 0, col: 0, status: SeatStatus.AVAILABLE },
-  { row: 0, col: 1, status: SeatStatus.TAKEN },
+  { row: 0, col: 1, status: SeatStatus.RESERVED },
 ]
 
 describe('SeatGrid', () => {

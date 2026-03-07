@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { ResetPasswordPage, Route } from '../reset-password'
+import { Route } from '../reset-password'
 import { authApi } from '@/api/auth'
 import { createWrapper } from '@/test/utils'
 

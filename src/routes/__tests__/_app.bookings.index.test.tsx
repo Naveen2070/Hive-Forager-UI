@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { MyBookingsPage, Route } from '../_app.bookings.index'
+import { Route } from '../_app.bookings.index'
 import { useMyBookings } from '@/features/bookings/hooks/useMyBookings'
 import { useMyTickets } from '@/features/tickets/hooks/useTickets'
 import { createWrapper } from '@/test/utils'
