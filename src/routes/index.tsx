@@ -12,7 +12,7 @@ export const Route = createFileRoute('/')({
   component: LandingPage,
 })
 
-function LandingPage() {
+export function LandingPage() {
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
   }, [])

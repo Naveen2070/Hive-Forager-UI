@@ -1,4 +1,4 @@
-import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -37,7 +37,7 @@ const resetSchema = z
     path: ['confirmPassword'],
   })
 
-function ResetPasswordPage() {
+export function ResetPasswordPage() {
   const { token } = Route.useSearch()
   const navigate = useNavigate()
 
@@ -49,7 +49,7 @@ function ResetPasswordPage() {
   const mutation = useMutation({
     mutationFn: (data: z.infer<typeof resetSchema>) =>
       authApi.resetPassword({ token, newPassword: data.password }),
-    onSuccess: async() => {
+    onSuccess: async () => {
       toast.success('Password reset successfully')
       await navigate({ to: '/login' })
     },

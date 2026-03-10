@@ -1,4 +1,4 @@
-import { Link, createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -26,7 +26,7 @@ const forgotPasswordSchema = z.object({
   email: z.email('Please enter a valid email address'),
 })
 
-function ForgotPasswordPage() {
+export function ForgotPasswordPage() {
   const form = useForm<{ email: string }>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: { email: '' },

@@ -27,7 +27,7 @@ import type { MovieResponse } from '@/types/movie.type'
 import type { MovieFormValues } from '@/features/movies/movie.schema'
 
 export const Route = createFileRoute('/_app/movies/')({
-  component: RouteComponent,
+  component: MoviesPage,
   loader: async ({ context: { queryClient } }) => {
     try {
       await queryClient.ensureQueryData({
@@ -40,7 +40,7 @@ export const Route = createFileRoute('/_app/movies/')({
   },
 })
 
-function RouteComponent() {
+export function MoviesPage() {
   const { user } = useAuthStore()
   const isOrganizer =
     user?.role === UserRole.ORGANIZER || user?.role === UserRole.SUPER_ADMIN

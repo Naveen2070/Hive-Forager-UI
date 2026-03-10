@@ -17,7 +17,7 @@ export const Route = createFileRoute('/_app/organizer/scan')({
   component: ScannerPage,
 })
 
-function ScannerPage() {
+export function ScannerPage() {
   // Track whether we are scanning Events or Movies
   const [scanMode, setScanMode] = useState<'EVENTS' | 'MOVIES'>('EVENTS')
 

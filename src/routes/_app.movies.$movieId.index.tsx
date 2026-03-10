@@ -42,7 +42,7 @@ export const Route = createFileRoute('/_app/movies/$movieId/')({
   },
 })
 
-function MovieDetailsPage() {
+export function MovieDetailsPage() {
   const { movieId } = useParams({ from: '/_app/movies/$movieId/' })
 
   // -- Auth --

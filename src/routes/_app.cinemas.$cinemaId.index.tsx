@@ -40,7 +40,7 @@ export const Route = createFileRoute('/_app/cinemas/$cinemaId/')({
   component: CinemaDetailPage,
 })
 
-function CinemaDetailPage() {
+export function CinemaDetailPage() {
   const { cinemaId } = useParams({ from: '/_app/cinemas/$cinemaId/' })
   const { user } = useAuthStore()
   const isOrganizer =

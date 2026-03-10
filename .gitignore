@@ -13,3 +13,8 @@ count.txt
 .wrangler
 .idea
 stats.html
+
+# Tests & Coverage
+coverage
+test-report
+html

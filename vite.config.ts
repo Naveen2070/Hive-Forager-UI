@@ -1,4 +1,4 @@
-import { fileURLToPath, URL } from 'node:url'
+import { URL, fileURLToPath } from 'node:url'
 import { defineConfig, loadEnv } from 'vite'
 import { devtools } from '@tanstack/devtools-vite'
 import viteReact from '@vitejs/plugin-react'
@@ -64,35 +64,39 @@ export default defineConfig(({ mode }) => {
         output: {
           manualChunks(id) {
             if (id.includes('node_modules')) {
-              // Group React Core
+              // Group React Core and internal utilities (like react-is, object-assign)
+              // to prevent circular dependencies between 'vendor' and 'react-vendor'
               if (
-                id.includes('react/') ||
-                id.includes('react-dom/') ||
-                id.includes('scheduler/')
+                id.includes('node_modules/react/') ||
+                id.includes('node_modules/react-dom/') ||
+                id.includes('node_modules/scheduler/') ||
+                id.includes('node_modules/react-is/') ||
+                id.includes('node_modules/object-assign/') ||
+                id.includes('node_modules/prop-types/')
               ) {
                 return 'react-vendor'
               }
 
               // TanStack Suite
-              if (id.includes('@tanstack')) {
+              if (id.includes('node_modules/@tanstack')) {
                 return 'tanstack-vendor'
               }
 
               // UI & Assets
-              if (id.includes('framer-motion')) {
+              if (id.includes('node_modules/framer-motion')) {
                 return 'framer-vendor'
               }
-              if (id.includes('lucide-react')) {
+              if (id.includes('node_modules/lucide-react')) {
                 return 'icons-vendor'
               }
-              if (id.includes('recharts')) {
+              if (id.includes('node_modules/recharts')) {
                 return 'charts-vendor'
               }
-              if (id.includes('@radix-ui')) {
+              if (id.includes('node_modules/@radix-ui')) {
                 return 'radix-vendor'
               }
-              
-              // Standard Vendor Catch-all (stable dependencies)
+
+              // Standard Vendor Catch-all
               return 'vendor'
             }
           },
@@ -103,6 +107,15 @@ export default defineConfig(({ mode }) => {
       globals: true,
       environment: 'jsdom',
       setupFiles: ['./src/test/setup.ts'],
+      reporters: ['default', 'html'],
+      outputFile: './test-report/index.html',
+      coverage: {
+        provider: 'v8',
+        include: ['src/**'],
+        exclude: ['**/mocks/**', 'src/test/**', 'src/types/**'],
+        reporter: ['text', 'html'],
+        reportsDirectory: './coverage',
+      },
     },
     resolve: {
       alias: {
