@@ -222,26 +222,26 @@ Payload for changing authenticated user's password.
 
 Generic wrapper for paginated lists.
 
-| Field           | Type      | Description                    |
-| :-------------- | :-------- | :----------------------------- |
-| `content`       | `List<T>` | List of items for current page |
-| `page`          | `Int`     | Current page index (0-based)   |
-| `size`          | `Int`     | Page size                      |
-| `totalElements` | `Long`    | Total number of records        |
-| `totalPages`    | `Int`     | Total number of pages          |
-| `isLast`        | `Boolean` | Whether this is the last page  |
+| Field           | Type      | Description                     |
+| :-------------- | :-------- | :------------------------------ |
+| `content`       | `List<T>` | List of items for current page  |
+| `pageNumber`    | `Int`     | Current page index (0-based)    |
+| `pageSize`      | `Int`     | Page size                       |
+| `totalElements` | `Long`    | Total number of records         |
+| `totalPages`    | `Int`     | Total number of pages           |
+| `isLast`        | `Boolean` | Whether this is the last page   |
 
 #### `ApiErrorResponse`
 
 Standard error structure for all failed requests.
 
-| Field       | Type            | Description                   |
-| :---------- | :-------------- | :---------------------------- |
-| `timestamp` | `LocalDateTime` | When the error occurred       |
-| `status`    | `Int`           | HTTP status code              |
-| `error`     | `String`        | HTTP status reason            |
-| `message`   | `String`        | Detailed error message        |
-| `path`      | `String`        | Endpoint where error occurred |
+| Field       | Type            | Description                                |
+| :---------- | :-------------- | :----------------------------------------- |
+| `timestamp` | `LocalDateTime` | When the error occurred                    |
+| `status`    | `Int`           | HTTP status code                           |
+| `error`     | `String`        | HTTP status reason (e.g. "Bad Request")    |
+| `message`   | `String`        | Detailed error message                     |
+| `path`      | `String`        | Endpoint where error occurred              |
 
 ---
 

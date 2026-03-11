@@ -248,8 +248,8 @@ _Package: `com.thehiveproject.event.api.dto`_
 | Field           | Type      | Description   |
 | :-------------- | :-------- | :------------ |
 | `content`       | `List<T>` | Data list     |
-| `page`          | `Int`     | Current page  |
-| `size`          | `Int`     | Page size     |
+| `pageNumber`    | `Int`     | Current page  |
+| `pageSize`      | `Int`     | Page size     |
 | `totalElements` | `Long`    | Total records |
 | `totalPages`    | `Int`     | Total pages   |
 | `isLast`        | `Boolean` | End of list?  |

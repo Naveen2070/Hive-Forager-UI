@@ -13,30 +13,31 @@ serves as a guide for understanding the data structures for API communication an
 
 Generic wrapper for paginated API responses used across the frontend.
 
-| Field                 | Type      | Description                     |
-|:----------------------|:----------|:--------------------------------|
-| `content`             | `T[]`     | Array of data items.            |
-| `pageable.pageNumber` | `number`  | Current page index (0-based).   |
-| `pageable.pageSize`   | `number`  | Number of items per page.       |
-| `totalElements`       | `number`  | Total items across all pages.   |
-| `totalPages`          | `number`  | Total number of pages.          |
-| `first`               | `boolean` | Whether this is the first page. |
-| `last`                | `boolean` | Whether this is the last page.  |
+| Field           | Type      | Description                    |
+| :-------------- | :-------- | :----------------------------- |
+| `content`       | `T[]`     | Array of data items.           |
+| `pageNumber`    | `number`  | Current page index (0-based).  |
+| `pageSize`      | `number`  | Number of items per page.      |
+| `totalElements` | `number`  | Total items across all pages.  |
+| `totalPages`    | `number`  | Total number of pages.         |
+| `isLast`        | `boolean` | Whether this is the last page. |
 
 #### `ApiError`
 
 Standard structure for API error responses.
 
-| Field       | Type     | Description                 |
-|:------------|:---------|:----------------------------|
-| `status`    | `number` | HTTP status code.           |
-| `message`   | `string` | Error description.          |
-| `timestamp` | `string` | ISO timestamp of the error. |
+| Field       | Type     | Description                               |
+| :---------- | :------- | :---------------------------------------- |
+| `status`    | `number` | HTTP status code.                         |
+| `error`     | `string` | HTTP status reason (e.g., "Bad Request"). |
+| `message`   | `string` | Detailed error description.               |
+| `path`      | `string` | API endpoint where error occurred.        |
+| `timestamp` | `string` | ISO timestamp of the error.               |
 
 ### Enums
 
 | Enum                   | Values                                                   | Description                                    |
-|:-----------------------|:---------------------------------------------------------|:-----------------------------------------------|
+| :--------------------- | :------------------------------------------------------- | :--------------------------------------------- |
 | `UserRole`             | `USER`, `ORGANIZER`, `ADMIN`, `SUPER_ADMIN`              | System-wide user roles.                        |
 | `EventStatus`          | `DRAFT`, `PUBLISHED`, `CANCELLED`, `COMPLETED`           | Lifecycle states for Events.                   |
 | `BookingStatus`        | `PENDING_PAYMENT`, `CONFIRMED`, `CANCELLED`, ...         | Status of a booking/reservation.               |
@@ -52,7 +53,7 @@ Standard structure for API error responses.
 ### `UserDTO`
 
 | Field       | Type       | Description                 |
-|:------------|:-----------|:----------------------------|
+| :---------- | :--------- | :-------------------------- |
 | `id`        | `string`   | Unique identifier.          |
 | `fullName`  | `string`   | User's full name.           |
 | `email`     | `string`   | User's email address.       |
@@ -63,7 +64,7 @@ Standard structure for API error responses.
 ### Auth Request/Response
 
 | Interface               | Description                               |
-|:------------------------|:------------------------------------------|
+| :---------------------- | :---------------------------------------- |
 | `LoginRequest`          | Email and password for authentication.    |
 | `RegisterUserRequest`   | Details for new user registration.        |
 | `AuthResponse`          | JWT Token, Refresh Token, and User Email. |
@@ -77,7 +78,7 @@ Standard structure for API error responses.
 ### `CinemaResponse`
 
 | Field            | Type                             | Description             |
-|:-----------------|:---------------------------------|:------------------------|
+| :--------------- | :------------------------------- | :---------------------- |
 | `id`             | `string`                         | Primary Key.            |
 | `name`           | `string`                         | Cinema Name.            |
 | `location`       | `string`                         | Physical Address.       |
@@ -91,7 +92,7 @@ Standard structure for API error responses.
 ### `MovieResponse`
 
 | Field             | Type      | Description         |
-|:------------------|:----------|:--------------------|
+| :---------------- | :-------- | :------------------ |
 | `id`              | `string`  | Primary Key.        |
 | `title`           | `string`  | Movie Title.        |
 | `description`     | `string`  | Synopsis.           |
@@ -106,7 +107,7 @@ Standard structure for API error responses.
 ### `AuditoriumResponse`
 
 | Field        | Type                  | Description            |
-|:-------------|:----------------------|:-----------------------|
+| :----------- | :-------------------- | :--------------------- |
 | `id`         | `string`              | Primary Key.           |
 | `cinemaId`   | `string`              | Parent Cinema ID.      |
 | `name`       | `string`              | Room/Screen name.      |
@@ -121,7 +122,7 @@ Standard structure for API error responses.
 ### `ShowtimeResponse`
 
 | Field          | Type     | Description            |
-|:---------------|:---------|:-----------------------|
+| :------------- | :------- | :--------------------- |
 | `id`           | `string` | Primary Key.           |
 | `movieId`      | `string` | Associated Movie.      |
 | `auditoriumId` | `string` | Associated Auditorium. |
@@ -131,7 +132,7 @@ Standard structure for API error responses.
 ### Seating Types
 
 | Interface                 | Description                                          |
-|:--------------------------|:-----------------------------------------------------|
+| :------------------------ | :--------------------------------------------------- |
 | `SeatCoordinateDTO`       | `{ row: number, col: number }`                       |
 | `SeatTierDTO`             | Pricing group for a set of coordinates.              |
 | `SeatStatusDTO`           | Status of a specific seat in the grid.               |
@@ -144,7 +145,7 @@ Standard structure for API error responses.
 ### `EventDTO`
 
 | Field           | Type              | Description                    |
-|:----------------|:------------------|:-------------------------------|
+| :-------------- | :---------------- | :----------------------------- |
 | `id`            | `number`          | Primary Key.                   |
 | `title`         | `string`          | Event Title.                   |
 | `description`   | `string`          | Event Description.             |
@@ -158,7 +159,7 @@ Standard structure for API error responses.
 ### `TicketTierDTO`
 
 | Field                 | Type     | Description                         |
-|:----------------------|:---------|:------------------------------------|
+| :-------------------- | :------- | :---------------------------------- |
 | `id`                  | `number` | Primary Key.                        |
 | `name`                | `string` | Tier name (e.g., "VIP", "General"). |
 | `price`               | `number` | Price per ticket.                   |
@@ -172,7 +173,7 @@ Standard structure for API error responses.
 ### `BookingDTO`
 
 | Field              | Type            | Description                        |
-|:-------------------|:----------------|:-----------------------------------|
+| :----------------- | :-------------- | :--------------------------------- |
 | `bookingId`        | `number`        | Primary Key.                       |
 | `bookingReference` | `string`        | Unique reference code.             |
 | `eventTitle`       | `string`        | Title of the event.                |
@@ -185,7 +186,7 @@ Standard structure for API error responses.
 ### `MyTicketResponse`
 
 | Field              | Type                     | Description           |
-|:-------------------|:-------------------------|:----------------------|
+| :----------------- | :----------------------- | :-------------------- |
 | `ticketId`         | `string`                 | Primary Key.          |
 | `bookingReference` | `string`                 | Human-readable code.  |
 | `movieTitle`       | `string`                 | Title of the movie.   |
@@ -199,7 +200,7 @@ Standard structure for API error responses.
 ### `CheckInResponse`
 
 | Field            | Type      | Description                       |
-|:-----------------|:----------|:----------------------------------|
+| :--------------- | :-------- | :-------------------------------- |
 | `success`        | `boolean` | Whether scan was successful.      |
 | `status`         | `string`  | Result code (e.g., `CHECKED_IN`). |
 | `attendeeName`   | `string?` | Ticket holder name.               |
@@ -212,7 +213,7 @@ Standard structure for API error responses.
 ### `DashboardStatsDTO`
 
 | Field              | Type                 | Description                      |
-|:-------------------|:---------------------|:---------------------------------|
+| :----------------- | :------------------- | :------------------------------- |
 | `totalRevenue`     | `number`             | Total lifetime revenue.          |
 | `totalTicketsSold` | `number`             | Total tickets confirmed.         |
 | `activeEvents`     | `number`             | Count of published events.       |
@@ -226,7 +227,7 @@ Standard structure for API error responses.
 ### `AuthState`
 
 | Field             | Type              | Description                           |
-|:------------------|:------------------|:--------------------------------------|
+| :---------------- | :---------------- | :------------------------------------ |
 | `user`            | `UserDTO \| null` | Currently logged in user profile.     |
 | `token`           | `string \| null`  | Bearer token for API authentication.  |
 | `isAuthenticated` | `boolean`         | Flag indicating logged-in state.      |
@@ -241,7 +242,7 @@ Standard structure for API error responses.
 ### `DotNetPagedResponse<T>`
 
 | Field           | Type      | Description                     |
-|:----------------|:----------|:--------------------------------|
+| :-------------- | :-------- | :------------------------------ |
 | `content`       | `T[]`     | List of items.                  |
 | `pageNumber`    | `number`  | Current zero-based index.       |
 | `pageSize`      | `number`  | Items per page.                 |
