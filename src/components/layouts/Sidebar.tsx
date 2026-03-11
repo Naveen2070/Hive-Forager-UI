@@ -1,4 +1,3 @@
-import type { LinkProps } from '@tanstack/react-router'
 import { Link, useLocation, useNavigate } from '@tanstack/react-router'
 import {
   Building2,
@@ -12,8 +11,9 @@ import {
   Settings,
   Ticket,
 } from 'lucide-react'
-import type { ElementType } from 'react'
 import { useState } from 'react'
+import type { ElementType } from 'react'
+import type { LinkProps } from '@tanstack/react-router'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/store/auth.store'
 import { UserRole } from '@/types/enum'
@@ -32,12 +32,20 @@ interface NavItem {
 
 export const Sidebar = () => {
   const { pathname } = useLocation()
-  const { user, logout } = useAuthStore()
+  const { user, logout, hasDomainAccess, getRoleForDomain } = useAuthStore()
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
 
-  // Check if the user has organizer privileges
-  const isOrganizer = user?.role === UserRole.ORGANIZER
+  // Domain-specific roles
+  const eventsRole = getRoleForDomain('events')
+  const moviesRole = getRoleForDomain('movies')
+
+  const hasEventsAccess = hasDomainAccess('events')
+  const hasMoviesAccess = hasDomainAccess('movies')
+
+  // Check if the user has organizer privileges in ANY domain
+  const isOrganizer =
+    eventsRole === UserRole.ORGANIZER || moviesRole === UserRole.ORGANIZER
 
   // Updated Links Array with the new polyglot structure
   const links: Array<NavItem> = [
@@ -51,19 +59,19 @@ export const Sidebar = () => {
       label: 'Cinemas',
       href: '/cinemas',
       icon: Building2,
-      show: isOrganizer,
+      show: moviesRole === UserRole.ORGANIZER,
     },
     {
       label: 'Events',
       href: '/events',
       icon: CalendarDays,
-      show: true,
+      show: hasEventsAccess,
     },
     {
       label: 'Movies',
       href: '/movies',
       icon: Film,
-      show: true,
+      show: hasMoviesAccess,
     },
     {
       label: 'My Bookings',
@@ -75,13 +83,13 @@ export const Sidebar = () => {
       label: 'Create Event',
       href: '/events/create',
       icon: PlusCircle,
-      show: isOrganizer,
+      show: eventsRole === UserRole.ORGANIZER,
     },
     {
       label: 'Scan Tickets',
       href: '/organizer/scan',
       icon: QrCode,
-      show: isOrganizer,
+      show: eventsRole === UserRole.ORGANIZER,
     },
   ]
 
@@ -154,7 +162,7 @@ export const Sidebar = () => {
         <div className="flex items-center gap-3 px-2">
           <div className="h-9 w-9 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700">
             <span className="font-semibold text-slate-300">
-              {user?.fullName?.charAt(0).toUpperCase() || '?'}
+              {user?.fullName.charAt(0).toUpperCase() || '?'}
             </span>
           </div>
           <div className="flex-1 overflow-hidden">

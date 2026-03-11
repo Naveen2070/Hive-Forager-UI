@@ -1,17 +1,16 @@
 export interface PageResponse<T> {
   content: Array<T>
-  pageable: {
-    pageNumber: number
-    pageSize: number
-  }
+  pageNumber: number
+  pageSize: number
   totalElements: number
   totalPages: number
-  last: boolean
-  first: boolean
+  isLast: boolean
 }
 
 export interface ApiError {
-  status: number
-  message: string
   timestamp: string
+  status: number
+  error: string
+  message: string
+  path: string
 }

@@ -195,6 +195,7 @@ export const ShowtimeSelector = ({
                         {isOrganizer && (
                           <div className="absolute -top-2 -right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                             <button
+                              title='edit'
                               onClick={(e) => {
                                 e.preventDefault()
                                 onEdit?.(timeObj)
@@ -204,6 +205,7 @@ export const ShowtimeSelector = ({
                               <Edit className="h-3 w-3" />
                             </button>
                             <button
+                              title='delete'
                               onClick={(e) => {
                                 e.preventDefault()
                                 onDelete?.(timeObj.id)
@@ -231,20 +233,19 @@ export const ShowtimeSelector = ({
             variant="outline"
             className="bg-slate-900 border-slate-700 hover:bg-slate-800 text-slate-300"
             onClick={() => setPage((p) => Math.max(0, p - 1))}
-            disabled={showtimesData.first}
+            disabled={showtimesData.pageNumber === 0}
           >
             <ChevronLeft className="w-4 h-4 mr-2" />
             Earlier Shows
           </Button>
           <span className="text-slate-400 text-sm font-medium">
-            Page {showtimesData.pageable.pageNumber + 1} of{' '}
-            {showtimesData.totalPages}
+            Page {showtimesData.pageNumber + 1} of {showtimesData.totalPages}
           </span>
           <Button
             variant="outline"
             className="bg-slate-900 border-slate-700 hover:bg-slate-800 text-slate-300"
             onClick={() => setPage((p) => p + 1)}
-            disabled={showtimesData.last}
+            disabled={showtimesData.isLast}
           >
             Later Shows
             <ChevronRight className="w-4 h-4 ml-2" />

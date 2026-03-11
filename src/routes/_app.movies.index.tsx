@@ -1,7 +1,9 @@
 import { useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 import { Plus, Trash2 } from 'lucide-react'
 
+import type { MovieResponse } from '@/types/movie.type'
+import type { MovieFormValues } from '@/features/movies/movie.schema'
 import { MovieCatalog } from '@/features/movies/components/MovieCatalog'
 import { movieKeys } from '@/features/movies/movies.keys'
 import {
@@ -23,10 +25,14 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 
-import type { MovieResponse } from '@/types/movie.type'
-import type { MovieFormValues } from '@/features/movies/movie.schema'
 
 export const Route = createFileRoute('/_app/movies/')({
+  beforeLoad: () => {
+    const { hasDomainAccess } = useAuthStore.getState()
+    if (!hasDomainAccess('movies')) {
+      throw redirect({ to: '/dashboard' })
+    }
+  },
   component: MoviesPage,
   loader: async ({ context: { queryClient } }) => {
     try {

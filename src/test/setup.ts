@@ -13,3 +13,12 @@ class IntersectionObserverMock {
 }
 
 vi.stubGlobal('IntersectionObserver', IntersectionObserverMock)
+
+// Mock ResizeObserver for Radix UI (Select, Checkbox, etc)
+class ResizeObserverMock {
+  observe = vi.fn()
+  unobserve = vi.fn()
+  disconnect = vi.fn()
+}
+
+vi.stubGlobal('ResizeObserver', ResizeObserverMock)

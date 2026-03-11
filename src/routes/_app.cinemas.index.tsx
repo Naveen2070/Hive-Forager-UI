@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ChevronLeft, ChevronRight, Plus, Search } from 'lucide-react'
+import type { CinemaResponse } from '@/types/cinema.type'
+import type { createCinemaValues } from '@/features/cinemas/cinema.schema'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
 import { useAuthStore } from '@/store/auth.store'
 import { UserRole } from '@/types/enum'
 import { DataFallback } from '@/components/shared/DataFallback'
-import type { CinemaResponse } from '@/types/cinema.type'
-import type { createCinemaValues } from '@/features/cinemas/cinema.schema'
 
 import {
   useCinemas,
@@ -246,19 +246,19 @@ export function CinemasPage() {
             variant="outline"
             className="bg-slate-900 border-slate-800 hover:bg-slate-800 text-slate-300"
             onClick={() => setPage((p) => Math.max(0, p - 1))}
-            disabled={activeData.first}
+            disabled={activeData.pageNumber === 0}
           >
             <ChevronLeft className="w-4 h-4 mr-2" />
             Previous
           </Button>
           <span className="text-slate-400 text-sm font-medium">
-            Page {activeData.pageable.pageNumber + 1} of {activeData.totalPages}
+            Page {activeData.pageNumber + 1} of {activeData.totalPages}
           </span>
           <Button
             variant="outline"
             className="bg-slate-900 border-slate-800 hover:bg-slate-800 text-slate-300"
             onClick={() => setPage((p) => p + 1)}
-            disabled={activeData.last}
+            disabled={activeData.isLast}
           >
             Next
             <ChevronRight className="w-4 h-4 ml-2" />

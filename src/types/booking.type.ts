@@ -22,14 +22,13 @@ export interface CheckInResponse {
     | 'CHECKED_IN'
     | 'ALREADY_CHECKED_IN'
     | 'EXPIRED'
-    | 'NOT_FOUND'
-    | 'WRONG_DATE'
     | 'INVALID_STATUS'
+    | 'WRONG_DATE'
     | 'NOT_AUTHORIZED'
   message: string
   attendeeName?: string
   ticketTierName?: string
-  bookingReference?: string
+  timestamp?: string
 }
 
 export interface CreateBookingRequest {

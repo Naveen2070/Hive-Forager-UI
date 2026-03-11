@@ -38,14 +38,11 @@ describe('Movies API Service', () => {
       expect(api.get).toHaveBeenCalledWith('/movies?page=0&size=10&search=test')
       expect(result).toEqual({
         content: mockPagedResponse.content,
-        pageable: {
-          pageNumber: 0,
-          pageSize: 10,
-        },
+        pageNumber: 0,
+        pageSize: 10,
         totalElements: 2,
         totalPages: 1,
-        first: true,
-        last: true,
+        isLast: true,
       })
     })
 

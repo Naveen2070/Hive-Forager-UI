@@ -39,8 +39,8 @@ describe('Auth Schemas', () => {
       email: 'john@example.com',
       password: 'password123',
       confirmPassword: 'password123',
-      domainAccess: ['events'],
-      role: UserRole.USER,
+      intent: UserRole.USER,
+      selectedDomains: ['events', 'movies'],
     }
 
     it('should validate a correct registration object', () => {

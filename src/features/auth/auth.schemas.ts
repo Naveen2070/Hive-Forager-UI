@@ -13,9 +13,12 @@ export const registerSchema = z
     fullName: z.string().min(3, 'Username must be at least 3 chars'),
     email: z.email('Invalid email address'),
     password: z.string().min(6, 'Password must be at least 6 chars'),
-    domainAccess: z.array(z.string("events")),
-    role: z.enum(UserRole),
     confirmPassword: z.string(),
+    // UI-only fields to help construct domainRoles
+    intent: z.enum([UserRole.USER, UserRole.ORGANIZER]).default(UserRole.USER),
+    selectedDomains: z
+      .array(z.string())
+      .min(1, 'Please select at least one domain'),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',

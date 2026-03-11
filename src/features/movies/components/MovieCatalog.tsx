@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
+import { ChevronLeft, ChevronRight, Search } from 'lucide-react'
 import { MovieGrid } from './MovieGrid'
+import type { MovieResponse } from '@/types/movie.type'
 import { DataFallback } from '@/components/shared/DataFallback'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { ChevronLeft, ChevronRight, Search } from 'lucide-react'
-import type { MovieResponse } from '@/types/movie.type'
 import { useMovies } from '@/features/movies/hooks/useMovies.ts'
 
 interface MovieCatalogProps {
@@ -116,21 +116,21 @@ export const MovieCatalog = ({
             variant="outline"
             className="bg-slate-900 border-slate-700 hover:bg-slate-800 text-slate-300"
             onClick={() => setPage((p) => Math.max(0, p - 1))}
-            disabled={data.first}
+            disabled={data.pageNumber === 0}
           >
             <ChevronLeft className="w-4 h-4 mr-2" />
             Previous
           </Button>
 
           <span className="text-slate-400 text-sm font-medium">
-            Page {data.pageable.pageNumber + 1} of {data.totalPages}
+            Page {data.pageNumber + 1} of {data.totalPages}
           </span>
 
           <Button
             variant="outline"
             className="bg-slate-900 border-slate-700 hover:bg-slate-800 text-slate-300"
             onClick={() => setPage((p) => p + 1)}
-            disabled={data.last}
+            disabled={data.isLast}
           >
             Next
             <ChevronRight className="w-4 h-4 ml-2" />

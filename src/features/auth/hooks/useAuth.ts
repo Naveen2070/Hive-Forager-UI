@@ -9,7 +9,7 @@ import type {
 import { UserRole } from '@/types/enum.ts'
 import { useAuthStore } from '@/store/auth.store.ts'
 import { authApi } from '@/api/auth.ts'
-import { parseJwt } from '@/lib/jwt.ts'
+import { getPrimaryRole, parseJwt } from '@/lib/jwt.ts'
 
 export const useAuth = () => {
   const navigate = useNavigate()
@@ -27,20 +27,20 @@ export const useAuth = () => {
         return
       }
 
-      // 1. Parse Roles
-      const rawRoles = decoded.roles
-      const primaryRole =
-        rawRoles.length > 0 ? rawRoles[0].replace('ROLE_', '') : 'USER'
+      // 1. Determine primary role (defaults to events domain for primary UI experience)
+      const primaryRole = getPrimaryRole(decoded, 'events')
 
       // 2. Construct User
-      const user = {
+      const user: UserDTO = {
         id: decoded.id,
         fullName: decoded.email.split('@')[0],
         email: decoded.email,
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        domainRoles: decoded.permissions || {},
         role: primaryRole as UserRole,
-        createdAt:"",
-        isActive:true,
-      } as UserDTO
+        createdAt: new Date().toISOString(),
+        isActive: true,
+      }
 
       setAuth(user, data.token)
       toast.success(`Welcome back, ${user.fullName}!`)

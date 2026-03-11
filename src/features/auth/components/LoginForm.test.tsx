@@ -1,12 +1,12 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { LoginForm } from './LoginForm'
 import { useAuthStore } from '@/store/auth.store'
 // Import mocked modules
 import { authApi } from '@/api/auth.ts'
 import { parseJwt } from '@/lib/jwt.ts'
-import { toast } from 'sonner'
 
 // 1. Mock external dependencies
 vi.mock('@/api/auth.ts', () => ({
@@ -17,6 +17,14 @@ vi.mock('@/api/auth.ts', () => ({
 
 vi.mock('@/lib/jwt.ts', () => ({
   parseJwt: vi.fn(),
+  getPrimaryRole: vi.fn((payload, domain = 'events') => {
+    if (!payload || !payload.permissions || !payload.permissions[domain]) {
+      return 'USER'
+    }
+    const roles = payload.permissions[domain]
+    if (roles.length === 0) return 'USER'
+    return roles[0].replace('ROLE_', '')
+  }),
 }))
 
 const mockNavigate = vi.fn()
@@ -89,12 +97,12 @@ describe('LoginForm - Edge to Edge', () => {
   })
 
   it('successfully logs in and updates state', async () => {
-    ;(authApi.login as any).mockResolvedValueOnce({ token: 'mock-token' })
-    ;(parseJwt as any).mockReturnValueOnce({
-      id: '123',
-      email: 'john@example.com',
-      roles: ['ROLE_USER'],
-    })
+    ; (authApi.login as any).mockResolvedValueOnce({ token: 'mock-token' })
+      ; (parseJwt as any).mockReturnValueOnce({
+        id: '123',
+        email: 'john@example.com',
+        permissions: { events: ['ROLE_USER'] },
+      })
 
     renderWithProviders(<LoginForm />)
 
@@ -115,12 +123,12 @@ describe('LoginForm - Edge to Edge', () => {
   })
 
   it('handles ORGANIZER login correctly', async () => {
-    ;(authApi.login as any).mockResolvedValueOnce({ token: 'token' })
-    ;(parseJwt as any).mockReturnValueOnce({
-      id: '999',
-      email: 'admin@example.com',
-      roles: ['ROLE_ORGANIZER'],
-    })
+    ; (authApi.login as any).mockResolvedValueOnce({ token: 'token' })
+      ; (parseJwt as any).mockReturnValueOnce({
+        id: '999',
+        email: 'admin@example.com',
+        permissions: { events: ['ROLE_ORGANIZER'] },
+      })
 
     renderWithProviders(<LoginForm />)
 
@@ -142,8 +150,8 @@ describe('LoginForm - Edge to Edge', () => {
     const promise = new Promise((resolve) =>
       setTimeout(() => resolve({ token: 't' }), 100),
     )
-    ;(authApi.login as any).mockReturnValueOnce(promise)
-    ;(parseJwt as any).mockReturnValue({ roles: [] })
+      ; (authApi.login as any).mockReturnValueOnce(promise)
+      ; (parseJwt as any).mockReturnValue({ permissions: {} })
 
     renderWithProviders(<LoginForm />)
 
@@ -163,7 +171,7 @@ describe('LoginForm - Edge to Edge', () => {
   })
 
   it('handles API errors with raw Error object', async () => {
-    ;(authApi.login as any).mockRejectedValueOnce(new Error('Network Error'))
+    ; (authApi.login as any).mockRejectedValueOnce(new Error('Network Error'))
 
     renderWithProviders(<LoginForm />)
 
@@ -183,12 +191,12 @@ describe('LoginForm - Edge to Edge', () => {
   it('redirects to the specified redirect search param after login', async () => {
     mockSearch = { redirect: '/dashboard/settings' }
 
-    ;(authApi.login as any).mockResolvedValueOnce({ token: 'mock-token' })
-    ;(parseJwt as any).mockReturnValueOnce({
-      id: '123',
-      email: 'john@example.com',
-      roles: ['ROLE_USER'],
-    })
+      ; (authApi.login as any).mockResolvedValueOnce({ token: 'mock-token' })
+      ; (parseJwt as any).mockReturnValueOnce({
+        id: '123',
+        email: 'john@example.com',
+        permissions: { events: ['ROLE_USER'] },
+      })
 
     renderWithProviders(<LoginForm />)
 
@@ -208,8 +216,8 @@ describe('LoginForm - Edge to Edge', () => {
   })
 
   it('submits the form successfully', async () => {
-    ;(authApi.login as any).mockResolvedValueOnce({ token: 'token' })
-    ;(parseJwt as any).mockReturnValueOnce({ roles: [] })
+    ; (authApi.login as any).mockResolvedValueOnce({ token: 'token' })
+      ; (parseJwt as any).mockReturnValueOnce({ permissions: {} })
 
     renderWithProviders(<LoginForm />)
 
@@ -219,7 +227,7 @@ describe('LoginForm - Edge to Edge', () => {
     fireEvent.change(screen.getByPlaceholderText('••••••'), {
       target: { value: 'password123' },
     })
-    
+
     // Find the form and submit it
     const form = screen.getByRole('button', { name: /sign in/i }).closest('form')
     fireEvent.submit(form!)

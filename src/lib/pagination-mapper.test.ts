@@ -1,5 +1,7 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { mapToPageResponse } from './pagination-mapper'
+import type { DotNetPagedResponse } from './pagination-mapper'
+import type { PageResponse } from '@/types/common.type'
 
 describe('pagination-mapper', () => {
   it('should map DotNetPagedResponse to PageResponse correctly for first page', () => {
@@ -12,23 +14,20 @@ describe('pagination-mapper', () => {
       isLast: false,
     }
 
-    const expectedResponse = {
+    const expectedResponse: PageResponse<string> = {
       content: ['item1', 'item2'],
-      pageable: {
-        pageNumber: 0,
-        pageSize: 10,
-      },
+      pageNumber: 0,
+      pageSize: 10,
       totalElements: 20,
       totalPages: 2,
-      first: true,
-      last: false,
+      isLast: false,
     }
 
     expect(mapToPageResponse(dotNetResponse)).toEqual(expectedResponse)
   })
 
   it('should map DotNetPagedResponse to PageResponse correctly for last page', () => {
-    const dotNetResponse = {
+    const dotNetResponse: DotNetPagedResponse<string> = {
       content: ['item1'],
       pageNumber: 1,
       pageSize: 10,
@@ -37,23 +36,20 @@ describe('pagination-mapper', () => {
       isLast: true,
     }
 
-    const expectedResponse = {
+    const expectedResponse: PageResponse<string> = {
       content: ['item1'],
-      pageable: {
-        pageNumber: 1,
-        pageSize: 10,
-      },
+      pageNumber: 1,
+      pageSize: 10,
       totalElements: 11,
       totalPages: 2,
-      first: false,
-      last: true,
+      isLast: true,
     }
 
     expect(mapToPageResponse(dotNetResponse)).toEqual(expectedResponse)
   })
 
   it('should handle empty responses', () => {
-    const dotNetResponse = {
+    const dotNetResponse: DotNetPagedResponse<string> = {
       content: [],
       pageNumber: 0,
       pageSize: 10,
@@ -63,8 +59,7 @@ describe('pagination-mapper', () => {
     }
 
     const result = mapToPageResponse(dotNetResponse)
-    expect(result.first).toBe(true)
-    expect(result.last).toBe(true)
+    expect(result.isLast).toBe(true)
     expect(result.content).toEqual([])
   })
 })

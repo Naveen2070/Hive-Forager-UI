@@ -11,17 +11,34 @@ interface AuthState {
   setAuth: (user: UserDTO, token: string) => void
   clearAuth: () => void
   logout: () => void
+  hasDomainAccess: (domain: string) => boolean
+  getRoleForDomain: (domain: string) => string | null
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
       token: null,
       isAuthenticated: false,
 
       setAuth: (user, token) => set({ user, token, isAuthenticated: true }),
       clearAuth: () => set({ user: null, token: null, isAuthenticated: false }),
+
+      hasDomainAccess: (domain) => {
+        const user = get().user
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (!user || !user.domainRoles) return false
+        return !!user.domainRoles[domain]
+      },
+
+      getRoleForDomain: (domain) => {
+        const user = get().user
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (!user || !user.domainRoles || !user.domainRoles[domain]) return null
+        const roles = user.domainRoles[domain]
+        return roles.length > 0 ? roles[0].replace('ROLE_', '') : null
+      },
 
       logout: async () => {
         if (import.meta.env.VITE_ENABLE_MOCK_AUTH !== 'true') {

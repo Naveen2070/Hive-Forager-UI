@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
@@ -17,6 +17,12 @@ import { DataFallback } from '@/components/shared/DataFallback'
 import { useEventQueries } from '@/features/events/hooks/useEvents.ts'
 
 export const Route = createFileRoute('/_app/events/')({
+  beforeLoad: () => {
+    const { hasDomainAccess } = useAuthStore.getState()
+    if (!hasDomainAccess('events')) {
+      throw redirect({ to: '/dashboard' })
+    }
+  },
   component: EventsPage,
 
   loader: async ({ context }) => {

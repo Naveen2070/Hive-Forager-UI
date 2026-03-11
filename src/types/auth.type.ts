@@ -4,7 +4,8 @@ export interface UserDTO {
   id: string
   fullName: string
   email: string
-  role: UserRole
+  domainRoles: Record<string, string[]>
+  role: UserRole // Convenience primary role for UI branching
   createdAt: string
   isActive: boolean
 }
@@ -13,8 +14,7 @@ export interface RegisterUserRequest {
   fullName: string
   email: string
   password: string
-  domainAccess:Array<string>
-  role: UserRole
+  domainRoles: Record<string, string>
 }
 
 export interface LoginRequest {

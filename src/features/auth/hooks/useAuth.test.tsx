@@ -1,12 +1,11 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { useAuth } from './useAuth'
 import { authApi } from '@/api/auth'
 import { useAuthStore } from '@/store/auth.store'
-import { toast } from 'sonner'
 import { parseJwt } from '@/lib/jwt'
-import { UserRole } from '@/types/enum'
 
 // 1. Mock external dependencies
 vi.mock('@/api/auth.ts', () => ({
@@ -16,9 +15,14 @@ vi.mock('@/api/auth.ts', () => ({
   },
 }))
 
-vi.mock('@/lib/jwt.ts', () => ({
-  parseJwt: vi.fn(),
-}))
+vi.mock('@/lib/jwt.ts', async (importOriginal) => {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  const actual = await importOriginal<typeof import('@/lib/jwt.ts')>()
+  return {
+    ...actual,
+    parseJwt: vi.fn(),
+  }
+})
 
 const mockNavigate = vi.fn()
 const mockUseSearch = vi.fn(() => ({ redirect: undefined }))
@@ -62,11 +66,11 @@ describe('useAuth Hook', () => {
       const mockUser = {
         id: '123',
         email: 'test@example.com',
-        roles: ['ROLE_USER'],
+        permissions: { events: ['ROLE_USER'] },
       }
 
-      ;(authApi.login as any).mockResolvedValueOnce({ token: mockToken })
-      ;(parseJwt as any).mockReturnValueOnce(mockUser)
+        ; (authApi.login as any).mockResolvedValueOnce({ token: mockToken })
+        ; (parseJwt as any).mockReturnValueOnce(mockUser)
 
       const { result } = renderHook(() => useAuth(), { wrapper })
 
@@ -87,12 +91,12 @@ describe('useAuth Hook', () => {
     })
 
     it('should redirect to dashboard for ORGANIZER role', async () => {
-      ;(authApi.login as any).mockResolvedValueOnce({ token: 'token' })
-      ;(parseJwt as any).mockReturnValueOnce({
-        id: '1',
-        email: 'admin@example.com',
-        roles: ['ROLE_ORGANIZER'],
-      })
+      ; (authApi.login as any).mockResolvedValueOnce({ token: 'token' })
+        ; (parseJwt as any).mockReturnValueOnce({
+          id: '1',
+          email: 'admin@example.com',
+          permissions: { events: ['ROLE_ORGANIZER'] },
+        })
 
       const { result } = renderHook(() => useAuth(), { wrapper })
 
@@ -110,9 +114,9 @@ describe('useAuth Hook', () => {
 
     it('should show error toast on failure', async () => {
       const errorMsg = 'Invalid credentials'
-      ;(authApi.login as any).mockRejectedValueOnce({
-        response: { data: { message: errorMsg } },
-      })
+        ; (authApi.login as any).mockRejectedValueOnce({
+          response: { data: { message: errorMsg } },
+        })
 
       const { result } = renderHook(() => useAuth(), { wrapper })
 
@@ -127,7 +131,7 @@ describe('useAuth Hook', () => {
     })
 
     it('should use default fallback error message if API provides no message', async () => {
-      ;(authApi.login as any).mockRejectedValueOnce({
+      ; (authApi.login as any).mockRejectedValueOnce({
         response: { data: {} },
       })
 
@@ -148,12 +152,12 @@ describe('useAuth Hook', () => {
       mockUseSearch.mockReturnValue({ redirect: '/checkout' } as any)
 
       const mockToken = 'mock-token'
-      ;(authApi.login as any).mockResolvedValueOnce({ token: mockToken })
-      ;(parseJwt as any).mockReturnValueOnce({
-        id: '1',
-        email: 'test@example.com',
-        roles: ['ROLE_USER'],
-      })
+        ; (authApi.login as any).mockResolvedValueOnce({ token: mockToken })
+        ; (parseJwt as any).mockReturnValueOnce({
+          id: '1',
+          email: 'test@example.com',
+          permissions: { events: ['ROLE_USER'] },
+        })
 
       const { result } = renderHook(() => useAuth(), { wrapper })
 
@@ -170,8 +174,8 @@ describe('useAuth Hook', () => {
     })
 
     it('should handle JWT parsing failure gracefully', async () => {
-      ;(authApi.login as any).mockResolvedValueOnce({ token: 'invalid-token' })
-      ;(parseJwt as any).mockReturnValueOnce(null)
+      ; (authApi.login as any).mockResolvedValueOnce({ token: 'invalid-token' })
+        ; (parseJwt as any).mockReturnValueOnce(null)
 
       const { result } = renderHook(() => useAuth(), { wrapper })
 
@@ -191,24 +195,23 @@ describe('useAuth Hook', () => {
 
   describe('register', () => {
     it('should call register API and navigate to login on success', async () => {
-      ;(authApi.register as any).mockResolvedValueOnce({ id: '1' })
+      ; (authApi.register as any).mockResolvedValueOnce({ id: '1' })
 
       const { result } = renderHook(() => useAuth(), { wrapper })
 
-      const registerData = {
-        fullName: 'John Doe',
-        email: 'john@example.com',
+      const mockData = {
+        fullName: 'Jane Doe',
+        email: 'jane@example.com',
         password: 'password123',
-        domainAccess: ['events'],
-        role: UserRole.USER,
+        domainRoles: { events: 'USER' },
       }
 
       await act(async () => {
-        result.current.register(registerData)
+        result.current.register(mockData as any)
       })
 
       await waitFor(() => {
-        expect(authApi.register).toHaveBeenCalledWith(registerData)
+        expect(authApi.register).toHaveBeenCalledWith(mockData)
         expect(toast.success).toHaveBeenCalledWith(
           'Registration successful! Please login.',
         )
@@ -218,9 +221,9 @@ describe('useAuth Hook', () => {
 
     it('should show error toast on registration failure', async () => {
       const errorMsg = 'Email already taken'
-      ;(authApi.register as any).mockRejectedValueOnce({
-        response: { data: { message: errorMsg } },
-      })
+        ; (authApi.register as any).mockRejectedValueOnce({
+          response: { data: { message: errorMsg } },
+        })
 
       const { result } = renderHook(() => useAuth(), { wrapper })
 

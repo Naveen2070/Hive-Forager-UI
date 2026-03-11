@@ -68,8 +68,7 @@ describe('Auth API Service', () => {
         fullName: 'Jane Doe',
         email: 'jane@example.com',
         password: 'securepassword',
-        domainAccess: ['events'],
-        role: UserRole.USER,
+        domainRoles: { events: 'USER' },
       }
 
       const result = await authApi.register(requestData)

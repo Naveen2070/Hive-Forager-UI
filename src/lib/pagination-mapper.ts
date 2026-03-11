@@ -1,7 +1,7 @@
 import type { PageResponse } from '@/types/common.type'
 
 export interface DotNetPagedResponse<T> {
-  content: T[]
+  content: Array<T>
   pageNumber: number
   pageSize: number
   totalElements: number
@@ -14,13 +14,10 @@ export const mapToPageResponse = <T>(
 ): PageResponse<T> => {
   return {
     content: data.content,
-    pageable: {
-      pageNumber: data.pageNumber,
-      pageSize: data.pageSize,
-    },
+    pageNumber: data.pageNumber,
+    pageSize: data.pageSize,
     totalElements: data.totalElements,
     totalPages: data.totalPages,
-    first: data.pageNumber === 0,
-    last: data.isLast,
+    isLast: data.isLast,
   }
 }

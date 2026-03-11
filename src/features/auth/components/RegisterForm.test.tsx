@@ -1,9 +1,9 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { RegisterForm } from './RegisterForm'
 import { authApi } from '@/api/auth.ts'
-import { toast } from 'sonner'
 import { UserRole } from '@/types/enum.ts'
 
 // Mock external dependencies
@@ -49,6 +49,19 @@ vi.mock('@/components/ui/select', () => ({
   ),
 }))
 
+// Mock standard Radix UI Checkbox
+vi.mock('@/components/ui/checkbox', () => ({
+  Checkbox: ({ checked, onCheckedChange }: any) => (
+    <input
+      title='checkbox'
+      type="checkbox"
+      checked={checked}
+      onChange={(e) => onCheckedChange(e.target.checked)}
+      data-testid="mock-checkbox"
+    />
+  ),
+}))
+
 // Test setup
 const createTestQueryClient = () =>
   new QueryClient({
@@ -68,7 +81,6 @@ const renderWithProviders = (ui: React.ReactElement) => {
 describe('RegisterForm - Edge to Edge', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    vi.resetModules()
   })
 
   it('renders correctly with all required fields', () => {
@@ -78,13 +90,19 @@ describe('RegisterForm - Edge to Edge', () => {
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/^password/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/confirm/i)).toBeInTheDocument()
+    expect(screen.getByText(/access domains/i)).toBeInTheDocument()
 
     expect(screen.getByTestId('link-/login')).toBeInTheDocument()
   })
 
   it('shows validation errors for empty submissions', async () => {
     renderWithProviders(<RegisterForm />)
-    fireEvent.click(screen.getByRole('button', { name: /create account/i }))
+
+    // Clear the default selected domains to trigger validation
+    // But default is ['events', 'movies'], so we need to manually trigger it.
+    // For simplicity, let's just test standard fields first.
+
+    fireEvent.click(screen.getByRole('button', { name: /join the hive/i }))
 
     await waitFor(() => {
       expect(
@@ -113,7 +131,7 @@ describe('RegisterForm - Edge to Edge', () => {
       target: { value: 'password456' },
     })
 
-    fireEvent.click(screen.getByRole('button', { name: /create account/i }))
+    fireEvent.click(screen.getByRole('button', { name: /join the hive/i }))
 
     await waitFor(() => {
       expect(screen.getByText('Passwords do not match')).toBeInTheDocument()
@@ -121,7 +139,7 @@ describe('RegisterForm - Edge to Edge', () => {
   })
 
   it('successfully registers user and navigates to login', async () => {
-    ;(authApi.register as any).mockResolvedValueOnce({ id: '1' })
+    ; (authApi.register as any).mockResolvedValueOnce({ id: '1' })
 
     renderWithProviders(<RegisterForm />)
 
@@ -138,7 +156,7 @@ describe('RegisterForm - Edge to Edge', () => {
       target: { value: 'password123' },
     })
 
-    fireEvent.click(screen.getByRole('button', { name: /create account/i }))
+    fireEvent.click(screen.getByRole('button', { name: /join the hive/i }))
 
     await waitFor(() => {
       expect(authApi.register).toHaveBeenCalled()
@@ -154,7 +172,7 @@ describe('RegisterForm - Edge to Edge', () => {
     const promise = new Promise((resolve) => {
       resolveRegister = resolve
     })
-    ;(authApi.register as any).mockReturnValueOnce(promise)
+      ; (authApi.register as any).mockReturnValueOnce(promise)
 
     renderWithProviders(<RegisterForm />)
 
@@ -171,22 +189,22 @@ describe('RegisterForm - Edge to Edge', () => {
       target: { value: 'password123' },
     })
 
-    fireEvent.click(screen.getByRole('button', { name: /create account/i }))
+    fireEvent.click(screen.getByRole('button', { name: /join the hive/i }))
 
     // Button should disable immediately after validation pass
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: /creating account/i }),
+        screen.getByRole('button', { name: /creating account.../i }),
       ).toBeDisabled()
     })
 
-    act(() => {
-      resolveRegister({ id: '1' })
+    await act(async () => {
+      await resolveRegister({ id: '1' })
     })
   })
 
   it('handles server-side registration errors gracefully', async () => {
-    ;(authApi.register as any).mockRejectedValueOnce({
+    ; (authApi.register as any).mockRejectedValueOnce({
       response: { data: { message: 'Email already exists' } },
     })
 
@@ -205,7 +223,7 @@ describe('RegisterForm - Edge to Edge', () => {
       target: { value: 'password123' },
     })
 
-    fireEvent.click(screen.getByRole('button', { name: /create account/i }))
+    fireEvent.click(screen.getByRole('button', { name: /join the hive/i }))
 
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith('Email already exists')
