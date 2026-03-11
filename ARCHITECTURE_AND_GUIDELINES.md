@@ -1,7 +1,8 @@
 # Architecture & Development Guidelines
 
-Welcome to the Frontend Service (`hive-forager-ui`) of The Hive Project. This document outlines the architectural
-choices, design patterns, engineering best practices, and development workflows used in this application.
+Welcome to the Frontend Service (`hive-forager`) of The Hive Project. This document outlines the architectural choices, design
+patterns, engineering best practices, and development workflows used in this service. It serves as a guide for current
+and future developers to understand how the system is built and how to contribute to it seamlessly.
 
 ---
 
@@ -9,101 +10,70 @@ choices, design patterns, engineering best practices, and development workflows 
 
 ### 1.1. Feature-Driven Design (FDD)
 
-The project is organized by **Features** rather than just by technical layers (components/hooks/services). This ensures
-that all logic related to a specific domain (e.g., `checkout`, `dashboard`) is co-located.
+The project follows a Feature-Driven Design pattern, where logic is modularized by domain rather than by technical type. This ensures that all components, hooks, and services related to a specific feature (e.g., "Auditoriums") are co-located.
 
-#### Project Structure
+* **`features/{feature-name}/components/`:** Presentational and container components specific to the feature.
+* **`features/{feature-name}/hooks/`:** Custom hooks for data fetching (using TanStack Query) or complex UI logic.
+* **`features/{feature-name}/services/`:** API call definitions specific to the feature.
+* **`features/{feature-name}/types/`:** TypeScript interfaces and enums for the feature domain.
 
-```text
-src/
-├── api/          # API Service Layer & Axios Configuration
-├── assets/       # Static images, illustrations, & global assets
-├── components/   # Shared UI components (Atomic design)
-├── features/     # Domain-specific logic (Auditoriums, Auth, Dashboard, etc.)
-├── hooks/        # Global custom React hooks
-├── integrations/ # External provider configurations (QueryClient)
-├── lib/          # Utilities, JWT handling, & Framer Motion presets
-├── routes/       # TanStack file-based route definitions
-├── routes-test/  # Integration tests for application routes
-├── store/        # Zustand global state (Auth, UI state)
-├── test/         # Vitest setup & global testing utilities
-└── types/        # Centralized TypeScript definitions & Enums
-```
+### 1.2. Separation of Concerns (UI vs. State)
 
-* **`src/features/`**: The heart of the application. Each sub-folder contains domain-specific components, hooks, and
-  logic.
-* **`src/api/`**: Centralized API layer using Axios. Handles request/response interceptors and global error handling.
-* **`src/routes/`**: File-based routing using **TanStack Router**, providing 100% type safety for URLs and search
-  parameters.
-* **`src/components/`**: Shared, domain-agnostic UI components (e.g., standard buttons, inputs, layouts).
-* **`src/store/`**: Global client-side state management using **Zustand**.
+We strictly separate the presentation layer from the state management and data-fetching logic.
 
-### 1.2. Type-Safe Data Flow
-
-We leverage TypeScript and Zod to ensure data integrity from the API to the UI.
-
-* **API Types**: Centralized in `src/types/` to be shared across features.
-* **Validation**: Zod schemas are used for form validation and environment variable parsing.
+* **Presentation:** Handled by React components using Tailwind CSS and Shadcn UI.
+* **Server State:** Managed by **TanStack Query** (React Query). This handles caching, synchronization, and server-side state.
+* **Client State:** Managed by **Zustand**. Used for global UI state like authentication, theme, or persistent user preferences.
 
 ---
 
-## 2. Design Patterns & State Management
+## 2. Design Patterns
 
-### 2.1. Server State vs. Client State
+### 2.1. Container-Presenter Pattern
 
-We maintain a strict separation between data fetched from the server and local UI state.
+While modern React prefers hooks, we still utilize the spirit of the container-presenter pattern. Hooks act as "containers" that manage logic and data, providing it to "presenter" components that focus purely on rendering.
 
-* **TanStack Query (Server State)**: Used for caching, synchronizing, and updating server data. This reduces the need
-  for complex global state for data that exists in the database.
-* **Zustand (Client State)**: Used for ephemeral UI state like authentication sessions, theme preferences, and
-  persistent local settings.
+### 2.2. Custom Hook Pattern
 
-### 2.2. Composition & Primitives
+Data fetching logic is never placed directly inside components. Instead, it is wrapped in custom hooks (e.g., `useGetEvents`, `useReserveSeats`) to promote reusability and testability.
 
-We use a "Primitive-First" approach for UI development:
+### 2.3. Utility / Helper Pattern
 
-* **Radix UI**: Provides the accessible, unstyled primitives (Dialogs, Tabs, etc.).
-* **Shadcn UI (Tailwind CSS)**: Provides the visual styling layer on top of Radix, ensuring a consistent and modern
-  look.
-
-### 2.3. Compound Components
-
-For complex UI elements (like the `Sidebar` or `Table`), we use the compound component pattern to provide a flexible and
-readable API for developers.
+Pure logic, formatting, and complex transformations are placed in `lib/` or `utils/` folders as standalone, exported functions that are easy to unit test.
 
 ---
 
 ## 3. Engineering Best Practices
 
-### 3.1. 100% Type-Safe Routing
+### 3.1. Strict Type Safety
 
-We use **TanStack Router**. Avoid using raw strings for links. Always use the generated `Link` component or the
-`useNavigate` hook with full type support to prevent broken links.
+* **TypeScript Everywhere:** We avoid `any` at all costs. Every API response, component prop, and state slice must be strictly typed.
+* **Type-Safe Routing:** Using **TanStack Router** to ensure that route parameters and navigation are verified at compile time.
 
-### 3.2. Mocking Strategy
+### 3.2. Responsive & Accessible Design
 
-To enable rapid UI development without a live backend:
-
-* **`VITE_ENABLE_MOCK_AUTH`**: When enabled, the `authStore` and API layer bypass real network calls and use localized
-  mock data from `src/api/mocks/`.
+* **Tailwind CSS:** Used for consistent, utility-first styling.
+* **Radix UI / Shadcn:** Used for accessible, unstyled primitives to ensure the UI is usable by everyone.
+* **Mobile First:** All features must be designed to work seamlessly on mobile devices, especially the QR scanner and booking flows.
 
 ### 3.3. Performance Optimization
 
-* **React Compiler**: The project is configured to use the React 19 Compiler, which automatically optimizes re-renders.
-* **Lazy Loading**: Routes and heavy components are automatically code-split to ensure fast initial page loads.
+* **Code Splitting:** Routes are lazily loaded to minimize the initial bundle size.
+* **Query Invalidation:** Strategic use of `queryClient.invalidateQueries` to ensure data remains fresh without redundant network calls.
+* **Memoization:** Use of `useMemo` and `useCallback` where necessary to prevent expensive re-renders in complex UI trees (like seat maps).
 
-### 3.4. Forms and Validation
+### 3.4. Component Composition
 
-Always use **React Hook Form** in combination with **Zod**. This provides a robust, performant, and type-safe way to
-handle user input.
+Prefer composition over deep prop drilling. Utilize Shadcn's primitive-based structure to build complex UI from simple, reusable blocks.
 
 ---
 
 ## 4. Testing Strategy
 
-* **Unit Tests**: Focused on utility functions and hooks, located in `.test.ts` files adjacent to their implementation.
-* **Component Tests**: Using **Vitest** and **React Testing Library** to verify UI behavior and accessibility.
-* **Integration Tests**: Verifying complex flows like authentication or checkout using mock service workers.
+* **Unit Tests (`vitest`):** Focused on utility functions, state management logic, and individual hooks.
+* **Component Tests (`React Testing Library`):** Verifying that components render correctly and handle user interactions as expected.
+* **Integration Tests (`routes-test/`):** Testing the integration of multiple components and hooks within a specific route context.
+* **Mocking (`msw` or internal mocks):** Using environment flags (`VITE_ENABLE_MOCK_AUTH`) to develop and test against consistent data sets.
 
 ---
 
@@ -111,14 +81,10 @@ handle user input.
 
 If you need to add a new feature (e.g., "Event Reviews"), follow this workflow:
 
-1. **Define the Feature Folder (`src/features/reviews/`)**:
-    * Create sub-folders for `components`, `hooks`, and `types` if necessary.
-2. **Define the API Service (`src/api/reviews.ts`)**:
-    * Implement the Axios calls for the new domain.
-3. **Add the Route (`src/routes/_app.reviews.index.tsx`)**:
-    * Define the new route in the TanStack Router structure.
-4. **Implement the UI**:
-    * Build components in the feature folder using shared UI primitives from `src/components/ui`.
-    * Use `useQuery` or `useMutation` for data fetching.
-5. **Add Tests**:
-    * Create `ReviewComponent.test.tsx` to verify the new functionality.
+1. **Create the Feature Folder:** `src/features/reviews/`.
+2. **Define Types:** Create `src/features/reviews/types.ts` based on the backend model.
+3. **Implement Service:** Create `src/features/reviews/services/reviewService.ts` for API calls.
+4. **Create Hooks:** Create `src/features/reviews/hooks/useReviews.ts` using TanStack Query.
+5. **Build Components:** Create presentational components in `src/features/reviews/components/`.
+6. **Define Route:** Add a new route in `src/routes/` and integrate the feature components.
+7. **Write Tests:** Add unit and component tests to verify the new functionality.
