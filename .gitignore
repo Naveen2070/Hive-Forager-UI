@@ -18,3 +18,8 @@ stats.html
 coverage
 test-report
 html
+# I don't do AI stuff in this learning project
+.gemini/
+.agents/
+agent.json
+*.skill
