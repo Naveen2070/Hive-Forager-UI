@@ -3,12 +3,10 @@ import type {
   MovieResponse,
   UpdateMovieRequest,
 } from '@/types/movie.type'
-import { api } from '@/api/axios.ts'
 import type { PageResponse } from '@/types/common.type.ts'
-import {
-  type DotNetPagedResponse,
-  mapToPageResponse,
-} from '@/lib/pagination-mapper.ts'
+import type { DotNetPagedResponse } from '@/lib/pagination-mapper.ts'
+import { api } from '@/api/axios.ts'
+import { mapToPageResponse } from '@/lib/pagination-mapper.ts'
 
 const isMock = import.meta.env.VITE_ENABLE_MOCK_AUTH === 'true'
 
@@ -39,14 +37,11 @@ export const moviesApi = {
 
       return {
         content,
-        pageable: {
-          pageNumber: page,
-          pageSize: size,
-        },
+        pageNumber: page,
+        pageSize: size,
         totalElements,
         totalPages,
-        first: page === 0,
-        last: page >= totalPages - 1 || totalPages === 0,
+        isLast: page >= totalPages - 1 || totalPages === 0,
       }
     }
 

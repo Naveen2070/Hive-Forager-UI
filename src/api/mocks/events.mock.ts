@@ -525,11 +525,10 @@ export const FEATURED_EVENTS_MOCK = {
       organizerName: 'Global Street Food Co.',
       createdAt: '2026-07-01T00:00:00Z',
     },
-  ] as EventDTO[],
-  page: {
-    size: 35,
-    number: 0,
-    totalElements: 35,
-    totalPages: 1,
-  },
+  ] as Array<EventDTO>,
+  pageNumber: 0,
+  pageSize: 35,
+  totalElements: 35,
+  totalPages: 1,
+  isLast: true,
 }

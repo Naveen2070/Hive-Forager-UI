@@ -1,6 +1,6 @@
-import { BookingStatus } from '@/types/enum.ts'
 import type { BookingDTO } from '@/types/booking.type.ts'
 import type { PageResponse } from '@/types/common.type.ts'
+import { BookingStatus } from '@/types/enum.ts'
 
 export const MY_BOOKINGS_MOCK = {
   totalPages: 1,
@@ -570,10 +570,8 @@ export const MY_BOOKINGS_MOCK = {
       bookedAt: '2026-07-10T13:00:00Z',
     },
   ],
-  pageable: {
-    pageNumber: 0,
-    pageSize: 35,
-  },
-  last: true,
-  first: true,
+
+  pageNumber: 0,
+  pageSize: 35,
+  isLast: true,
 } satisfies PageResponse<BookingDTO>

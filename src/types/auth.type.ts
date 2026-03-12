@@ -4,7 +4,7 @@ export interface UserDTO {
   id: string
   fullName: string
   email: string
-  domainRoles: Record<string, string[]>
+  domainRoles: Record<string, Array<string>>
   role: UserRole // Convenience primary role for UI branching
   createdAt: string
   isActive: boolean

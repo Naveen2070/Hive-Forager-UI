@@ -3,13 +3,11 @@ import type {
   CreateCinemaRequest,
   UpdateCinemaRequest,
 } from '@/types/cinema.type'
-import { CinemaApprovalStatus } from '@/types/enum'
-import { api } from '@/api/axios'
 import type { PageResponse } from '@/types/common.type.ts'
-import {
-  type DotNetPagedResponse,
-  mapToPageResponse,
-} from '@/lib/pagination-mapper.ts'
+import type { CinemaApprovalStatus } from '@/types/enum'
+import type { DotNetPagedResponse } from '@/lib/pagination-mapper.ts'
+import { api } from '@/api/axios'
+import { mapToPageResponse } from '@/lib/pagination-mapper.ts'
 
 const isMock = import.meta.env.VITE_ENABLE_MOCK_AUTH === 'true'
 
@@ -37,11 +35,11 @@ export const cinemasApi = {
 
       return {
         content: filtered.slice(page * size, (page + 1) * size),
-        pageable: { pageNumber: page, pageSize: size },
+        pageNumber: page,
+        pageSize: size,
         totalElements,
         totalPages,
-        first: page === 0,
-        last: page >= totalPages - 1 || totalPages === 0,
+        isLast: page >= totalPages - 1 || totalPages === 0,
       }
     }
 
