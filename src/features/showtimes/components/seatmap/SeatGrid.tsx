@@ -25,7 +25,9 @@ export const SeatGrid = ({
 }: SeatGridProps) => {
   const seatLookup = useMemo(() => {
     const map = new Map<string, SeatStatusDTO>()
-    seatMap.forEach((seat) => map.set(`${seat.row}-${seat.col}`, seat))
+    seatMap.forEach((seat: any) =>
+      map.set(`${seat.row ?? seat.Row}-${seat.col ?? seat.Col}`, seat),
+    )
     return map
   }, [seatMap])
 
@@ -34,7 +36,9 @@ export const SeatGrid = ({
   // Helper to check if a seat is in a premium tier
   const getSeatTier = (r: number, c: number) => {
     return tiers.find((tier) =>
-      tier.seats.some((s: any) => s.row === r && s.col === c),
+      tier.seats.some(
+        (s: any) => (s.row ?? s.Row) === r && (s.col ?? s.Col) === c,
+      ),
     )
   }
 

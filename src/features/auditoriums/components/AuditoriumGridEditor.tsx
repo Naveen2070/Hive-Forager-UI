@@ -22,8 +22,10 @@ export const AuditoriumGridEditor = ({
   const [activeTool, setActiveTool] = useState<PaintTool>('AVAILABLE')
 
   // Helper to safely check if a seat is in an array
-  const hasSeat = (arr: SeatCoordinateDTO[], r: number, c: number) =>
-    arr.some((s) => s.row === r && s.col === c)
+  const hasSeat = (arr: any[], r: number, c: number) =>
+    arr.some(
+      (s) => (s.row ?? s.Row) === r && (s.col ?? s.Col) === c,
+    )
 
   // Determine the current state of a seat
   const getSeatState = (r: number, c: number): PaintTool => {
@@ -42,14 +44,16 @@ export const AuditoriumGridEditor = ({
     // 1. Remove the seat from ALL arrays first to clean its state
     const newLayout: AuditoriumLayoutDTO = {
       disabledSeats: layout.disabledSeats.filter(
-        (s) => !(s.row === r && s.col === c),
+        (s: any) => !((s.row ?? s.Row) === r && (s.col ?? s.Col) === c),
       ),
       wheelchairSpots: layout.wheelchairSpots.filter(
-        (s) => !(s.row === r && s.col === c),
+        (s: any) => !((s.row ?? s.Row) === r && (s.col ?? s.Col) === c),
       ),
       tiers: layout.tiers.map((tier) => ({
         ...tier,
-        seats: tier.seats.filter((s) => !(s.row === r && s.col === c)),
+        seats: tier.seats.filter(
+          (s: any) => !((s.row ?? s.Row) === r && (s.col ?? s.Col) === c),
+        ),
       })),
     }
 
